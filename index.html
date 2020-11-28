@@ -1,0 +1,84 @@
+<!doctype html>
+<html>
+    <head>
+	<title></title>
+	<meta charset="utf-8" />
+	<link rel="stylesheet" href="custom-proset.css"/>
+	<!-- node_modules/jspdf/dist/ -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/canvg/3.0.7/umd.js"></script>
+    </head>
+    <body>
+	<div class="card"></div>
+	<div class="ui">
+	    <!-- <input type="file"/>
+		 <input type="file"/>
+		 <input type="file"/> -->
+	</div>
+	<input type="file" onchange="previewFile()"><br>
+	<img src="" height="200" alt="Aperçu de l’image...">
+	<img src="" height="200" alt="Aperçu de l’image...">
+	<script src="custom-proset.js"></script>
+	<script>
+	 /**
+	  * converts a base64 encoded data url SVG image to a PNG image
+	  * @param originalBase64 data url of svg image
+	  * @param width target width in pixel of PNG image
+	  * @return {Promise<String>} resolves to png data url of the image
+	  */
+	 function base64SvgToBase64Png (originalBase64, width) {
+	     return new Promise(resolve => {
+		 let img = document.createElement('img');
+		 img.onload = function () {
+		     document.body.appendChild(img);
+		     let canvas = document.createElement("canvas");
+		     document.body.appendChild(canvas);
+		     console.log(canvas);
+		     let ratio = (img.clientWidth / img.clientHeight) || 1;
+		     document.body.removeChild(img);
+		     canvas.width = width*10;
+		     canvas.height = canvas.width / ratio;
+		     let ctx = canvas.getContext("2d");
+		     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+		     try {
+			 let data = canvas.toDataURL('image/png');
+			 console.log("canvas.width", canvas.width)
+			 resolve([data, canvas.width, canvas.height]);
+		     } catch (e) {
+			 resolve(null);
+		     }
+		 };
+		 img.src = originalBase64;
+	     });
+	 }
+	 
+	 function previewFile() {
+	     var preview = document.querySelectorAll('img')[0];
+	     var preview2 = document.querySelectorAll('img')[1];
+	     var file    = document.querySelector('input[type=file]').files[0];
+	     var reader  = new FileReader();
+	     var reader2  = new FileReader();
+	     reader.addEventListener("load", function () {
+		 docu = new jspdf.jsPDF("p", "mm", "a4");
+		 base64SvgToBase64Png(reader.result, 800).then(([res,x,y]) => {
+		     console.log("x,y is", x,y)
+		     i = docu.getImageProperties(res);
+		     console.log("iwh", i.width, i.height)
+		     docu.addImage(res, 0, 15,i.width*0.264583333/10, i.height*0.264583333/10);
+		     docu.save("my.pdf");
+		     console.log(reader.result)
+		     preview.src = reader.result;		     
+		 })
+	     }, false);
+	     reader2.addEventListener("load", function () {
+		 preview2.src = reader.result;
+	     }, false);
+
+	     if (file) {
+		 reader.readAsDataURL(file);
+		 reader2.readAsDataURL(file);
+	     }
+	 }
+	</script>
+	<script src="https://unpkg.com/jspdf@latest/dist/jspdf.umd.js"></script>
+    </body>
+</html>
