@@ -5,11 +5,75 @@
 	<meta charset="utf-8" />
 	<link rel="stylesheet" href="custom-proset.css"/>
 	<!-- node_modules/jspdf/dist/ -->
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/canvg/3.0.7/umd.js"></script>
+	<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/canvg/3.0.7/umd.js"></script> -->
     </head>
     <body>
-	<div class="card"></div>
+	<!-- Card for previewing result and moving things around -->
+	<div class="card">
+	    <img draggable="false" class="item alt="" id="img-item-0"/>
+	    <img draggable="false" class="item" alt="" id="img-item-1"/>
+	    <img draggable="false" class="item" alt="" id="img-item-2"/>
+	    <img draggable="false" class="item" alt="" id="img-item-3"/>
+	    <img draggable="false" class="item" alt="" id="img-item-4"/>
+	    <img draggable="false" class="item" alt="" id="img-item-5"/>
+	</div>
+	<!-- User Interface for choosing editing tool -->
+	<div class="editing-tools">
+	    <span id="scale-tool">Scale</span>
+	    <span id="move-tool">Move</span>
+	</div>
+	<!-- User Interface for choosing parameters and items -->
 	<div class="ui">
+	    <h3>Cards</h3>
+	    <ul>
+		<li>Card dimension: <input id="card-width" type="number" value="64"/>mm x <input id="card-height" type="number" value="89"/>mm</li>
+	    </ul>
+	    <h3>Items</h3>
+	    Number of items : 6
+	    <ul>
+		<li>
+		    Item 0: <input type="file" id="file0"> <ul>
+		    <li>Dimension <input type="number">x<input type="number"></li>
+		    <li>Position <input type="number">x<input type="number"></li>
+		    <li>z-index: <input type="number"></li>
+		    </ul>
+		</li>
+		<li>
+		    Item 1: <input type="file" id="file1"> <ul>
+		    <li>Dimension <input type="number">x<input type="number"></li>
+		    <li>Position <input type="number">x<input type="number"></li>
+		    <li>z-index: <input type="number"></li>
+		    </ul>
+		</li>
+		<li>
+		    Item 2: <input type="file" id="file2"> <ul>
+		    <li>Dimension <input type="number">x<input type="number"></li>
+		    <li>Position <input type="number">x<input type="number"></li>
+		    <li>z-index: <input type="number"></li>
+		    </ul>
+		</li>
+		<li>
+		    Item 3: <input type="file" id="file3"> <ul>
+		    <li>Dimension <input type="number">x<input type="number"></li>
+		    <li>Position <input type="number">x<input type="number"></li>
+		    <li>z-index: <input type="number"></li>
+		    </ul>
+		</li>
+		<li>
+		    Item 4: <input type="file" id="file4"> <ul>
+		    <li>Dimension <input type="number">x<input type="number" nu class="number></li>
+		    <li>Dimension <input Positi n="number">x<input type="number" Positi></li>
+		    <li>z-index: <input type="number"></li>
+		    </ul>
+		</li>
+		<li>
+		    Item 5: <input type="file" id="file5"> <ul>
+		    <li>Dimension <input type="number">x<input type="number"></li>
+		    <li>Dimension <input Positi n="number">x<input type="number"></li>
+		    <li>z-index: <input type="number"></li>
+		    </ul>
+		</li>
+	    </ul>
 	    <!-- <input type="file"/>
 		 <input type="file"/>
 		 <input type="file"/> -->
@@ -52,31 +116,35 @@
 	 }
 	 
 	 function previewFile() {
-	     var preview = document.querySelectorAll('img')[0];
-	     var preview2 = document.querySelectorAll('img')[1];
-	     var file    = document.querySelector('input[type=file]').files[0];
-	     var reader  = new FileReader();
-	     var reader2  = new FileReader();
-	     reader.addEventListener("load", function () {
-		 docu = new jspdf.jsPDF("p", "mm", "a4");
-		 base64SvgToBase64Png(reader.result, 800).then(([res,x,y]) => {
-		     console.log("x,y is", x,y)
-		     i = docu.getImageProperties(res);
-		     console.log("iwh", i.width, i.height)
-		     docu.addImage(res, 0, 15,i.width*0.264583333/10, i.height*0.264583333/10);
-		     docu.save("my.pdf");
-		     console.log(reader.result)
-		     preview.src = reader.result;		     
-		 })
-	     }, false);
-	     reader2.addEventListener("load", function () {
-		 preview2.src = reader.result;
-	     }, false);
+	     /* var preview = document.querySelectorAll('img')[0];
+		var preview2 = document.querySelectorAll('img')[1];
+		var file    = document.querySelector('input[type=file]').files[0];
+		var reader  = new FileReader();
+		var reader2  = new FileReader();
+		reader.addEventListener("load", function () {
+		docu = new jspdf.jsPDF("p", "mm", "a4");
+		base64SvgToBase64Png(reader.result, 800).then(([res,x,y]) => {
+		console.log("x,y is", x,y)
+		i = docu.getImageProperties(res);
+		console.log("iwh", i.width, i.height)
+		docu.addImage(res, 0, 15, i.width*0.264583333/10, i.height*0.264583333/10);
+		docu.save("my.pdf");
+		console.log(reader.result)
+		preview.src = reader.result;		     
+		});
+		}, false);
+		reader2.addEventListener("load", function () {
+		preview2.onLoad = ()
+		docu2 = new jspdf.jsPDF("p", "mm", "a4");
+		docu2.addImage(reader2.result, 0, 0,, i.height*0.264583333/10);
+		docu2.save("my.pdf");
+		preview2.src = reader.result;
+		}, false);
 
-	     if (file) {
-		 reader.readAsDataURL(file);
-		 reader2.readAsDataURL(file);
-	     }
+		if (file) {
+		reader.readAsDataURL(file);
+		reader2.readAsDataURL(file);
+		}*/
 	 }
 	</script>
 	<script src="https://unpkg.com/jspdf@latest/dist/jspdf.umd.js"></script>
