@@ -102,14 +102,55 @@ let print = () => {
 
     let docu = new jspdf.jsPDF("p", "mm", "a4");
 
-    docu.rect(0,0,64,89);
-    document.querySelectorAll(".item").forEach((item,i) => {
-	if(item.src == "")
-	    return;
-	let [x,y] = getCoordOfElem(item);
-	console.log((item.src, x*scale, y*scale, item.width*scale, item.height*scale));
-	docu.addImage(item.src, x*scale, y*scale, item.width*scale, item.height*scale);
-    });
+    for(let n=1 ; n<Math.pow(2,6) ; n++){
+	docu.rect((n-1)*64+0,0,64,89);
+	document.querySelectorAll(".item").forEach((item,i) => {
+	    if(item.src != "" && (n >> i) % 2) {
+		let [x,y] = getCoordOfElem(item);
+		console.log((item.src, n*64+x*scale, y*scale, item.width*scale, item.height*scale));
+		docu.addImage(item.src, (n-1)*64+x*scale, y*scale, item.width*scale, item.height*scale);
+	    }
+ 	});
+    }
     docu.save("my.pdf");
 
 };
+
+
+
+
+////////////////////////////::
+// Pour plus tard (svg to jpg)
+////////////////////////////::
+
+/**
+ * converts a base64 encoded data url SVG image to a PNG image
+ * @param originalBase64 data url of svg image
+ * @param width target width in pixel of PNG image
+ * @return {Promise<String>} resolves to png data url of the image
+ */
+function base64SvgToBase64Png (originalBase64, width) {
+    return new Promise(resolve => {
+	let img = document.createElement('img');
+	img.onload = function () {
+	    document.body.appendChild(img);
+	    let canvas = document.createElement("canvas");
+	    document.body.appendChild(canvas);
+	    console.log(canvas);
+	    let ratio = (img.clientWidth / img.clientHeight) || 1;
+	    document.body.removeChild(img);
+	    canvas.width = width*10;
+	    canvas.height = canvas.width / ratio;
+	    let ctx = canvas.getContext("2d");
+	    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+	    try {
+		let data = canvas.toDataURL('image/png');
+		console.log("canvas.width", canvas.width)
+		resolve([data, canvas.width, canvas.height]);
+	    } catch (e) {
+		resolve(null);
+	    }
+	};
+	img.src = originalBase64;
+    });
+}
