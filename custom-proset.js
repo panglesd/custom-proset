@@ -103,12 +103,20 @@ let print = () => {
     let docu = new jspdf.jsPDF("p", "mm", "a4");
 
     for(let n=1 ; n<Math.pow(2,6) ; n++){
-	docu.rect((n-1)*64+0,0,64,89);
+	console.log("étape", n);
+	// docu.rect((n-1)%3*64+0,0,64,89);
+	if((n-1)%9==0 && n>1)
+	    docu.addPage();
+	docu.rect((n-1)%3*64,Math.floor((n-1)%9/3)*89+0,64,89);
 	document.querySelectorAll(".item").forEach((item,i) => {
+	    if((n >> i) % 2) {
+		console.log("image", i, "ajoutée");
+	    } else {
+		
+	    }
 	    if(item.src != "" && (n >> i) % 2) {
 		let [x,y] = getCoordOfElem(item);
-		console.log((item.src, n*64+x*scale, y*scale, item.width*scale, item.height*scale));
-		docu.addImage(item.src, (n-1)*64+x*scale, y*scale, item.width*scale, item.height*scale);
+		docu.addImage(item.src, (n-1)%3*64+x*scale, Math.floor((n-1)%9/3)*89+y*scale, item.width*scale, item.height*scale);
 	    }
  	});
     }
