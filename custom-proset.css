@@ -35,6 +35,7 @@ input[type="number"] {
     /* height: 200px; */
     background-color: lightgreen;
     text-align: center;
+    z-index:1;
 }
 
 .item {
