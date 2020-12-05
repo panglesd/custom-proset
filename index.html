@@ -51,7 +51,17 @@
 		</li>
 	    </ul>
 	    <h3>Print options</h3>
-	    ... <input name="" type="button" value="Print" onclick="print()"/>
+	    Print format <select id="print-format" name="">
+		<option value="a3">A3</option>
+		<option selected value="a4">A4</option>
+		<option value="a5">A5</option>
+		<option value="letter">letter</option>
+		<option value="custom">custom</option>
+	    </select><br/>
+	    Margin <input id="print-margin" type="number" value="10"/>mm<br/>
+	    Orientation: <input type="radio" name="portrait" value="portrait" checked/> Portrait, <input type="radio" name="portrait" value="landscape"/> Landscape <br/>
+	    Card delimiter: <input type="radio" name="delimiter" value="box" checked/> Box, <input type="radio" name="delimiter" value="intersection"/> Intersection, <input type="radio" name="delimiter" value="none"/> None
+	    <input name="" type="button" value="Print" onclick="print()"/>
 	</div>
 	<script src="custom-proset.js"></script>
 	<script src="https://unpkg.com/jspdf@latest/dist/jspdf.umd.js"></script>

@@ -97,26 +97,51 @@ document.querySelectorAll(".item").forEach((item) =>{
 ////////////////////////////::
 
 let print = () => {
+    let cardDim = [parseInt(document.querySelector("#card-width").value), parseInt(document.querySelector("#card-height").value)];
+    let [cardDimX, cardDimY] = cardDim;
+
     let cardWidth = document.querySelector(".card").offsetWidth;
-    let scale = 64/cardWidth;
+    let scale = cardDimX/cardWidth;
 
+    let format = document.querySelector("#print-format").value;
+    let pageDim, pageDimX, pageDimY;
+    if(format == "a4")
+	pageDim = [210,297];
+    else if(format == "a3")
+	pageDim = [210,297];
+    else if(format == "a5")
+	pageDim = [210,297];
+    else if(format == "custom")
+	pageDim = [210,297];
+    [pageDimX, pageDimY] = pageDim;
+
+    let margin = parseInt(document.querySelector("#print-margin").value);
+    
+    let nx = Math.floor((pageDimX-2*margin)/(document.querySelector("#card-width").value));
+    let ny = Math.floor((pageDimY-2*margin)/(document.querySelector("#card-height").value));
+
+    console.log("nx et ny",nx,ny);
+    
     let docu = new jspdf.jsPDF("p", "mm", "a4");
-
+    docu.setDrawColor(220,220,220);
+    
     for(let n=1 ; n<Math.pow(2,6) ; n++){
 	console.log("étape", n);
 	// docu.rect((n-1)%3*64+0,0,64,89);
-	if((n-1)%9==0 && n>1)
+	if((n-1)%(nx*ny)==0 && n>1)
 	    docu.addPage();
-	docu.rect((n-1)%3*64,Math.floor((n-1)%9/3)*89+0,64,89);
+	// console.log("rect",margin+(n-1)%(nx)*cardDimX,margin+Math.floor((n-1)%(nx*ny)/(nx))*cardDimY+0,cardDimX,cardDimY);
+	docu.rect(margin+(n-1)%(nx)*cardDimX,margin+Math.floor((n-1)%(nx*ny)/(nx))*cardDimY+0,cardDimX,cardDimY);
 	document.querySelectorAll(".item").forEach((item,i) => {
 	    if((n >> i) % 2) {
-		console.log("image", i, "ajoutée");
+		// console.log("image", i, "ajoutée");
 	    } else {
 		
 	    }
 	    if(item.src != "" && (n >> i) % 2) {
 		let [x,y] = getCoordOfElem(item);
-		docu.addImage(item.src, (n-1)%3*64+x*scale, Math.floor((n-1)%9/3)*89+y*scale, item.width*scale, item.height*scale);
+		// console.log("addImage",item.src, margin+(n-1)%(nx)*cardDimX+x*scale, margin+Math.floor((n-1)%(nx*ny)/nx)*cardDimY+y*scale, item.width*scale, item.height*scale);
+		docu.addImage(item.src, margin+(n-1)%(nx)*cardDimX+x*scale, margin+Math.floor((n-1)%(nx*ny)/nx)*cardDimY+y*scale, item.width*scale, item.height*scale);
 	    }
  	});
     }
