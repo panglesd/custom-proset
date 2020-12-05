@@ -196,6 +196,38 @@ let updateFormat = () => {
 };
 updateFormat();
 document.querySelector("#print-format").addEventListener("change", updateFormat);
+
+
+let updateCardSize = () => {
+    let dX = parseInt(document.querySelector("#card-width").value);
+    let dY = parseInt(document.querySelector("#card-height").value);
+    let containerX = document.querySelector("#card-container").offsetWidth;
+    let containerY = document.querySelector("#card-container").offsetHeight;
+
+    let cardElem = document.querySelector(".card");
+    let newX, newY;
+    if(dX/dY>(containerX-40)/(containerY-40)) {
+	newX = containerX-40;
+	newY = newX*dY/dX;
+	cardElem.style.left = 20+"px";
+	cardElem.style.top = ((containerY-newY)/2)+"px";
+    }
+    else {
+	newY = containerY-40;
+	newX = newY*dX/dY;
+	cardElem.style.top = (20)+"px";
+	cardElem.style.left = ((containerX-newX)/2)+"px";
+    }
+	cardElem.style.width = newX+"px";
+	cardElem.style.height = newY+"px";
+};
+
+document.querySelector("#card-width").addEventListener("change", updateCardSize);
+document.querySelector("#card-height").addEventListener("change", updateCardSize);
+
+updateCardSize();
+
+
 ////////////////////////////::
 // Pour plus tard (svg to jpg)
 ////////////////////////////::
