@@ -57,8 +57,12 @@
 		<option value="a5">A5</option>
 		<option value="letter">letter</option>
 		<option value="custom">custom</option>
-	    </select><br/>
-	    Margin <input id="print-margin" type="number" value="10"/>mm<br/>
+	    </select>
+	    <span class="customSizeInput"><input id="customX" type="number" value="210"/>x
+		<input id="customY" type="number" value="297"/>mm
+	    </span>
+	    <br/>
+	    Margin <input id="print-margin" type="number" value="5"/>mm<br/>
 	    Orientation: <input type="radio" name="portrait" value="portrait" checked/> Portrait, <input type="radio" name="portrait" value="landscape"/> Landscape <br/>
 	    Card delimiter: <input type="radio" name="delimiter" value="box" checked/> Box, <input type="radio" name="delimiter" value="intersection"/> Intersection, <input type="radio" name="delimiter" value="none"/> None
 	    <input name="" type="button" value="Print" onclick="print()"/>

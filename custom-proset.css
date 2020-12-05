@@ -39,3 +39,8 @@ input[type="number"] {
     top:0px;
     left:0px;
 }
+
+
+.customSizeInput {
+    display:none;
+}

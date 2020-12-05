@@ -96,6 +96,11 @@ document.querySelectorAll(".item").forEach((item) =>{
 // Printing
 ////////////////////////////::
 
+let printCross = (docu, x,y) => {
+    docu.line(x-2,y,x+2,y);
+    docu.line(x,y-2,x,y+2);  
+};
+
 let print = () => {
     let cardDim = [parseInt(document.querySelector("#card-width").value), parseInt(document.querySelector("#card-height").value)];
     let [cardDimX, cardDimY] = cardDim;
@@ -104,25 +109,43 @@ let print = () => {
     let scale = cardDimX/cardWidth;
 
     let format = document.querySelector("#print-format").value;
+    let landscape = document.querySelector("[value=\"landscape\"]").checked;
     let pageDim, pageDimX, pageDimY;
     if(format == "a4")
 	pageDim = [210,297];
     else if(format == "a3")
-	pageDim = [210,297];
+	pageDim = [297,420];
     else if(format == "a5")
-	pageDim = [210,297];
+	pageDim = [148,210];
+    else if(format == "letter")
+	pageDim = [215.9, 279.4];
     else if(format == "custom")
-	pageDim = [210,297];
-    [pageDimX, pageDimY] = pageDim;
+	pageDim = [parseInt(document.querySelector("#customX").value),parseInt(document.querySelector("#customY").value)];
+    if(landscape)
+	[pageDimY, pageDimX] = pageDim;
+    else
+	[pageDimX, pageDimY] = pageDim;
 
     let margin = parseInt(document.querySelector("#print-margin").value);
     
     let nx = Math.floor((pageDimX-2*margin)/(document.querySelector("#card-width").value));
     let ny = Math.floor((pageDimY-2*margin)/(document.querySelector("#card-height").value));
 
+    if(nx * ny == 0) {
+	alert("card too big or paper size too small");
+	return;
+    }
     console.log("nx et ny",nx,ny);
-    
-    let docu = new jspdf.jsPDF("p", "mm", "a4");
+
+    let crossChoice;
+    if(document.querySelector("input[value=\"box\"]").checked)
+	crossChoice = "box";
+    else if(document.querySelector("input[value=\"none\"]").checked)
+	crossChoice = "none";
+    else if(document.querySelector("input[value=\"intersection\"]").checked)
+	crossChoice = "intersection";
+    let docu = new jspdf.jsPDF(landscape ? "l" : "p", "mm", pageDim);
+	
     docu.setDrawColor(220,220,220);
     
     for(let n=1 ; n<Math.pow(2,6) ; n++){
@@ -131,7 +154,15 @@ let print = () => {
 	if((n-1)%(nx*ny)==0 && n>1)
 	    docu.addPage();
 	// console.log("rect",margin+(n-1)%(nx)*cardDimX,margin+Math.floor((n-1)%(nx*ny)/(nx))*cardDimY+0,cardDimX,cardDimY);
-	docu.rect(margin+(n-1)%(nx)*cardDimX,margin+Math.floor((n-1)%(nx*ny)/(nx))*cardDimY+0,cardDimX,cardDimY);
+	let [cx,cy,lx,ly] = [margin+(n-1)%(nx)*cardDimX,margin+Math.floor((n-1)%(nx*ny)/(nx))*cardDimY+0,cardDimX,cardDimY];
+	if(crossChoice == "intersection"){
+	    printCross(docu,cx,cy);
+	    printCross(docu,cx+lx,cy);
+	    printCross(docu,cx,cy+ly);
+	    printCross(docu,cx+lx,cy+ly);
+	}
+	else if (crossChoice == "box")
+	    docu.rect(cx,cy,lx,ly);
 	document.querySelectorAll(".item").forEach((item,i) => {
 	    if((n >> i) % 2) {
 		// console.log("image", i, "ajoutée");
@@ -150,8 +181,21 @@ let print = () => {
 };
 
 
-
-
+let updateFormat = () => {
+    let val = document.querySelector("#print-format").value;
+    if(val == "custom") {
+	document.querySelectorAll(".customSizeInput").forEach((elem) => {
+	    elem.style.display = "inline";
+	});
+    }
+    else {
+	document.querySelectorAll(".customSizeInput").forEach((elem) => {
+	    elem.style.display = "none";
+	});
+    }
+};
+updateFormat();
+document.querySelector("#print-format").addEventListener("change", updateFormat);
 ////////////////////////////::
 // Pour plus tard (svg to jpg)
 ////////////////////////////::
