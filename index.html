@@ -9,65 +9,69 @@
     </head>
     <body>
 	<!-- Card for previewing result and moving things around -->
-	<div class="card">
-	    <img draggable="false" class="item" alt="" id="img-item-0"/>
-	    <img draggable="false" class="item" alt="" id="img-item-1"/>
-	    <img draggable="false" class="item" alt="" id="img-item-2"/>
-	    <img draggable="false" class="item" alt="" id="img-item-3"/>
-	    <img draggable="false" class="item" alt="" id="img-item-4"/>
-	    <img draggable="false" class="item" alt="" id="img-item-5"/>
-	</div>
-	<!-- User Interface for choosing editing tool -->
-	<div class="editing-tools">
-	    <span id="scale-tool">Scale</span>
-	    <span id="move-tool">Move</span>
-	</div>
-	<!-- User Interface for choosing parameters and items -->
-	<div class="ui">
-	    <h3>Cards</h3>
-	    <ul>
-		<li>Card dimension: <input id="card-width" type="number" value="64"/>mm x <input id="card-height" type="number" value="89"/>mm</li>
-	    </ul>
-	    <h3>Items</h3>
-	    Number of items : 6
-	    <ul>
-		<li>
-		    Item 0: <input type="file" id="file0">
-		</li>
-		<li>
-		    Item 1: <input type="file" id="file1">
-		</li>
-		<li>
-		    Item 2: <input type="file" id="file2">
-		</li>
-		<li>
-		    Item 3: <input type="file" id="file3">
-		</li>
-		<li>
-		    Item 4: <input type="file" id="file4">
-		</li>
-		<li>
-		    Item 5: <input type="file" id="file5">
-		</li>
-	    </ul>
-	    <h3>Print options</h3>
-	    Print format <select id="print-format" name="">
-		<option value="a3">A3</option>
-		<option selected value="a4">A4</option>
-		<option value="a5">A5</option>
-		<option value="letter">letter</option>
-		<option value="custom">custom</option>
-	    </select>
-	    <span class="customSizeInput"><input id="customX" type="number" value="210"/>x
-		<input id="customY" type="number" value="297"/>mm
-	    </span>
-	    <br/>
-	    Margin <input id="print-margin" type="number" value="5"/>mm<br/>
-	    Orientation: <input type="radio" name="portrait" value="portrait" checked/> Portrait, <input type="radio" name="portrait" value="landscape"/> Landscape <br/>
-	    Card delimiter: <input type="radio" name="delimiter" value="box" checked/> Box, <input type="radio" name="delimiter" value="intersection"/> Intersection, <input type="radio" name="delimiter" value="none"/> None
-	    <input name="" type="button" value="Print" onclick="print()"/>
-	</div>
-	<script src="custom-proset.js"></script>
+	<div id="main-container">
+	    <div id="card-and-options-container">
+		<div id="card-container">
+		    <div class="card">
+			<img draggable="false" class="item" alt="" id="img-item-0"/>
+			<img draggable="false" class="item" alt="" id="img-item-1"/>
+			<img draggable="false" class="item" alt="" id="img-item-2"/>
+			<img draggable="false" class="item" alt="" id="img-item-3"/>
+			<img draggable="false" class="item" alt="" id="img-item-4"/>
+			<img draggable="false" class="item" alt="" id="img-item-5"/>
+		    </div>
+		</div>
+		<!-- User Interface for choosing editing tool -->
+		<div class="editing-tools">
+		    <span id="scale-tool">Scale</span>
+		    <span id="move-tool">Move</span>
+		</div>
+	    </div>	<!-- User Interface for choosing parameters and items -->
+	    <div class="ui">
+		<h3>Cards</h3>
+		<ul>
+		    <li>Card dimension: <input id="card-width" type="number" value="64"/>mm x <input id="card-height" type="number" value="89"/>mm</li>
+		</ul>
+		<h3>Items</h3>
+		Number of items : 6
+		<ul>
+		    <li>
+			Item 0: <input type="file" id="file0">
+		    </li>
+		    <li>
+			Item 1: <input type="file" id="file1">
+		    </li>
+		    <li>
+			Item 2: <input type="file" id="file2">
+		    </li>
+		    <li>
+			Item 3: <input type="file" id="file3">
+		    </li>
+		    <li>
+			Item 4: <input type="file" id="file4">
+		    </li>
+		    <li>
+			Item 5: <input type="file" id="file5">
+		    </li>
+		</ul>
+		<h3>Print options</h3>
+		Print format <select id="print-format" name="">
+		    <option value="a3">A3</option>
+		    <option selected value="a4">A4</option>
+		    <option value="a5">A5</option>
+		    <option value="letter">letter</option>
+		    <option value="custom">custom</option>
+		</select>
+		<span class="customSizeInput"><input id="customX" type="number" value="210"/>x
+		    <input id="customY" type="number" value="297"/>mm
+		</span>
+		<br/>
+		Margin <input id="print-margin" type="number" value="5"/>mm<br/>
+		Orientation: <input type="radio" name="portrait" value="portrait" checked/> Portrait, <input type="radio" name="portrait" value="landscape"/> Landscape <br/>
+		Card delimiter: <input type="radio" name="delimiter" value="box" checked/> Box, <input type="radio" name="delimiter" value="intersection"/> Intersection, <input type="radio" name="delimiter" value="none"/> None <br/>
+		<input name="" type="button" value="Print" onclick="print()"/>
+	    </div>
+	</div>	<script src="custom-proset.js"></script>
 	<script src="https://unpkg.com/jspdf@latest/dist/jspdf.umd.js"></script>
     </body>
 </html>
