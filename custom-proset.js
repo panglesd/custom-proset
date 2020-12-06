@@ -23,16 +23,18 @@ let updateItem = function(i) {
     let [dX,dY] = [document.querySelector(".card").offsetWidth, document.querySelector(".card").offsetHeight];
     let file = document.querySelector('#file'+i).files[0];
     let rx = 3/4, ry=3/4;
+    let [lineNumber, columnNumber] = [parseInt(document.querySelector("#card-line-number").value), parseInt(document.querySelector("#card-column-number").value)];
+    console.log([lineNumber, columnNumber]);
     reader.addEventListener("load", function () {
 	image.onload= () => {
-	    let lX = (1-rx)/3*dX;
-	    let LX = (rx)/2*dX;
-	    let lY = (1-ry)/4*dY;
-	    let LY = (ry)/3*dY;
+	    let lX = (1-rx)/(columnNumber+1)*dX;
+	    let LX = (rx)/columnNumber*dX;
+	    let lY = (1-ry)/(lineNumber+1)*dY;
+	    let LY = (ry)/(lineNumber)*dY;
 	    let boxX,boxY,boxLX=LX,boxLY=LY;
 
-	    boxX = lX + (i%2)*(LX+lX);
-	    boxY = lY + Math.floor(i/2)*(lY+LY);
+	    boxX = lX + (i%columnNumber)*(LX+lX);
+	    boxY = lY + Math.floor(i/columnNumber)*(lY+LY);
 
 	    fitInBox(image, boxX, boxY, boxLX, boxLY);
 	    // image.style.top = (dY/4-image.offsetHeight/2+Math.floor(i/2)*dY/4)+"px";
