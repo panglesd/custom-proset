@@ -71,6 +71,15 @@ input[type="number"] {
     flex-grow: 1;
 }
 
-#editing-tools {
-    
+.editing-tools {
+    padding: 20px;    
+}
+.editing-tools > * {
+    padding: 5px;    
+}
+
+.selected-tool {
+    color:red;
+    padding: 4px;    
+    border: 1px solid black;
 }

@@ -1,8 +1,19 @@
 let updateItem = function(i) {
     let image = document.querySelector("#img-item-"+i);
     let reader  = new FileReader();
+    let [dX,dY] = [document.querySelector(".card").offsetWidth, document.querySelector(".card").offsetHeight];
     let file = document.querySelector('#file'+i).files[0];
     reader.addEventListener("load", function () {
+	image.onload= () => {
+	    image.width = dX/3;
+	    if(i%2)
+		image.style.left = (5/9*dX)+"px";
+	    else
+		image.style.left = (1/9*dX)+"px";
+	    // alert(image.offsetHeight);
+	    image.style.top = (dY/4-image.offsetHeight/2+Math.floor(i/2)*dY/4)+"px";
+	};
+
 	image.src = reader.result;
     });
     if(file) {
@@ -30,15 +41,24 @@ let scaleDistance = (x,y) => {
 ////////////////////////////::
 
 let scaleTool = new Object();
-scaleTool.mouseUp = (ev) => {scaleTool.originClick = undefined;};
+scaleTool.elem = document.querySelector("#scale-tool");
+scaleTool.mouseUp = (ev) => {
+    scaleTool.originClick = undefined;
+    scaleTool.originTarget = undefined;
+    scaleTool.originalWidth = undefined;
+};
 scaleTool.mouseDown = (ev) => {
-    scaleTool.originClick = [ev.pageX, ev.pageY];
-    scaleTool.originalWidth = ev.target.width;
+    if(ev.target.classList.contains("item")){
+	ev.preventDefault();
+	scaleTool.originClick = [ev.pageX, ev.pageY];
+	scaleTool.originalWidth = ev.target.width;
+	scaleTool.originTarget = ev.target;
+    }
 };
 scaleTool.mouseClick = (ev) => {console.log(ev);};
 scaleTool.mouseMove = (ev) => {
     if(typeof (scaleTool.originClick) != "undefined") {
-	ev.target.width = scaleTool.originalWidth + (ev.pageX - scaleTool.originClick[0]);
+	scaleTool.originTarget.width = scaleTool.originalWidth + (ev.pageX - scaleTool.originClick[0]);
     }
 };
 
@@ -47,20 +67,31 @@ scaleTool.mouseMove = (ev) => {
 ////////////////////////////::
 
 let moveTool = new Object();
-moveTool.mouseUp = (ev) => {moveTool.originClick = undefined;};
+moveTool.elem = document.querySelector("#move-tool");
+moveTool.mouseUp = (ev) => {
+    console.log("mouseup");
+    moveTool.originClick = undefined;
+    moveTool.originTarget = undefined;
+    moveTool.originPosition = undefined;
+};
 moveTool.mouseDown = (ev) => {
-    moveTool.originClick = [ev.pageX, ev.pageY];
-    moveTool.originPosition = getCoordOfElem(ev.target);
+    if(ev.target.classList.contains("item")){
+	ev.preventDefault();
+	console.log("mousedown");
+	moveTool.originClick = [ev.pageX, ev.pageY];
+	moveTool.originTarget = ev.target;
+	moveTool.originPosition = getCoordOfElem(ev.target);
+    }
 };
 moveTool.mouseClick = (ev) => {console.log(ev);};
 moveTool.mouseMove = (ev) => {
     if(typeof (moveTool.originClick) != "undefined") {
-	console.log(ev.target);
-	ev.target.style.left=(moveTool.originPosition[0]+(ev.pageX-moveTool.originClick[0]))+"px";
-	ev.target.style.top=(moveTool.originPosition[1]+(ev.pageY-moveTool.originClick[1]))+"px";
+	// console.log(ev.target);
+	moveTool.originTarget.style.left=(moveTool.originPosition[0]+(ev.pageX-moveTool.originClick[0]))+"px";
+	moveTool.originTarget.style.top=(moveTool.originPosition[1]+(ev.pageY-moveTool.originClick[1]))+"px";
 	
 	moveTool.originClick = [ev.pageX, ev.pageY];
-	moveTool.originPosition = getCoordOfElem(ev.target);
+	moveTool.originPosition = getCoordOfElem(moveTool.originTarget);
 	
 	// console.log([ev.pageX - ev.target.offsetLeft, ev.pageY - ev.target.offsetTop]);
     }
@@ -76,6 +107,8 @@ let currentTool;
 
 
 let setCurrentTool = (tool) => {
+    document.querySelectorAll(".selected-tool").forEach((elem) => {elem.classList.remove("selected-tool");});
+    if(tool.elem) tool.elem.classList.add("selected-tool");
     currentTool = tool;
 };
 setCurrentTool(noTool);
@@ -83,8 +116,9 @@ setCurrentTool(noTool);
 document.querySelector("#scale-tool").addEventListener("click", () => {setCurrentTool(scaleTool);});
 document.querySelector("#move-tool").addEventListener("click", () => {setCurrentTool(moveTool);});
 
-document.querySelectorAll(".item").forEach((item) =>{
+document.querySelectorAll("#card-container").forEach((item) =>{
     item.addEventListener("mouseup", (ev) => {currentTool.mouseUp(ev);});
+    item.addEventListener("mouseleave", (ev) => {currentTool.mouseUp(ev);});
     item.addEventListener("mousedown", (ev) => {currentTool.mouseDown(ev);});
     item.addEventListener("click", (ev) => {currentTool.mouseClick(ev);});
     item.addEventListener("mousemove", (ev) => {currentTool.mouseMove(ev);});
@@ -254,7 +288,7 @@ function base64SvgToBase64Png (originalBase64, width) {
 	    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 	    try {
 		let data = canvas.toDataURL('image/png');
-		console.log("canvas.width", canvas.width)
+		console.log("canvas.width", canvas.width);
 		resolve([data, canvas.width, canvas.height]);
 	    } catch (e) {
 		resolve(null);
