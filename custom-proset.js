@@ -1,17 +1,41 @@
+let fitInBox = (image, x, y,lx, ly) => {
+    let [imageX, imageY ] = [image.offsetWidth, image.offsetHeight];
+    let newX, newY;
+    if(imageX/imageY>lx/ly) {
+	newX = lx;
+	newY = newX*imageY/imageX;
+	image.style.left = x+"px";
+	image.style.top = (y+(ly-newY)/2)+"px";
+    }
+    else {
+	newY = ly;
+	newX = newY*imageX/imageY;
+	image.style.top = y+"px";
+	image.style.left = (x+(lx-newX)/2)+"px";
+    }
+    image.width = newX;
+    // cardElem.style.height = newY+"px";
+};
+
 let updateItem = function(i) {
     let image = document.querySelector("#img-item-"+i);
     let reader  = new FileReader();
     let [dX,dY] = [document.querySelector(".card").offsetWidth, document.querySelector(".card").offsetHeight];
     let file = document.querySelector('#file'+i).files[0];
+    let rx = 3/4, ry=3/4;
     reader.addEventListener("load", function () {
 	image.onload= () => {
-	    image.width = dX/3;
-	    if(i%2)
-		image.style.left = (5/9*dX)+"px";
-	    else
-		image.style.left = (1/9*dX)+"px";
-	    // alert(image.offsetHeight);
-	    image.style.top = (dY/4-image.offsetHeight/2+Math.floor(i/2)*dY/4)+"px";
+	    let lX = (1-rx)/3*dX;
+	    let LX = (rx)/2*dX;
+	    let lY = (1-ry)/4*dY;
+	    let LY = (ry)/3*dY;
+	    let boxX,boxY,boxLX=LX,boxLY=LY;
+
+	    boxX = lX + (i%2)*(LX+lX);
+	    boxY = lY + Math.floor(i/2)*(lY+LY);
+
+	    fitInBox(image, boxX, boxY, boxLX, boxLY);
+	    // image.style.top = (dY/4-image.offsetHeight/2+Math.floor(i/2)*dY/4)+"px";
 	};
 
 	image.src = reader.result;
@@ -252,8 +276,8 @@ let updateCardSize = () => {
 	cardElem.style.top = (20)+"px";
 	cardElem.style.left = ((containerX-newX)/2)+"px";
     }
-	cardElem.style.width = newX+"px";
-	cardElem.style.height = newY+"px";
+    cardElem.style.width = newX+"px";
+    cardElem.style.height = newY+"px";
 };
 
 document.querySelector("#card-width").addEventListener("change", updateCardSize);
