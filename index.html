@@ -61,8 +61,8 @@
 			Item 5: <input class="file-input" type="file" id="file5">
 		    </li>
 		</ul>
-		<h3>Print options</h3>
-		Print format <select id="print-format" name="">
+		<h3>PDF options</h3>
+		PDF format <select id="print-format" name="">
 		    <option value="a3">A3</option>
 		    <option selected value="a4">A4</option>
 		    <option value="a5">A5</option>
@@ -76,7 +76,7 @@
 		Margin <input id="print-margin" type="number" value="5"/>mm<br/>
 		Orientation: <input type="radio" name="portrait" value="portrait" checked/> Portrait, <input type="radio" name="portrait" value="landscape"/> Landscape <br/>
 		Card delimiter: <input type="radio" name="delimiter" value="box" checked/> Box, <input type="radio" name="delimiter" value="intersection"/> Intersection, <input type="radio" name="delimiter" value="none"/> None <br/>
-		<input name="" type="button" value="Print" onclick="print()"/>
+		<input name="" type="button" value="Generate PDF" onclick="print()"/>
 	    </div>
 	</div>	<script src="custom-proset.js"></script>
 	<script src="https://unpkg.com/jspdf@latest/dist/jspdf.umd.js"></script>
