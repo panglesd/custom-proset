@@ -13,47 +13,51 @@
 	    <div id="card-and-options-container">
 		<div id="card-container">
 		    <div class="card">
-			<img width="100px" draggable="false" class="item" alt="" id="img-item-0"/>
-			<img width="100px" draggable="false" class="item" alt="" id="img-item-1"/>
-			<img width="100px" draggable="false" class="item" alt="" id="img-item-2"/>
-			<img width="100px" draggable="false" class="item" alt="" id="img-item-3"/>
-			<img width="100px" draggable="false" class="item" alt="" id="img-item-4"/>
-			<img width="100px" draggable="false" class="item" alt="" id="img-item-5"/>
+			<!-- <img draggable="false" alt="" id="card-background"/> -->
+			<img width="100px" draggable="false" class="item" alt="" id="img-item-0" item-number="0"/>
+			<img width="100px" draggable="false" class="item" alt="" id="img-item-1" item-number="1"/>
+			<img width="100px" draggable="false" class="item" alt="" id="img-item-2" item-number="2"/>
+			<img width="100px" draggable="false" class="item" alt="" id="img-item-3" item-number="3"/>
+			<img width="100px" draggable="false" class="item" alt="" id="img-item-4" item-number="4"/>
+			<img width="100px" draggable="false" class="item" alt="" id="img-item-5" item-number="5"/>
 		    </div>
 		</div>
 		<!-- User Interface for choosing editing tool -->
 		<div class="editing-tools">
 		    <span id="scale-tool">Scale</span>
 		    <span id="move-tool">Move</span>
+		    <span id="redispose-tool">Auto-placement tool</span>
 		</div>
 	    </div>	<!-- User Interface for choosing parameters and items -->
 	    <div class="ui">
+		<h2>Proset Card Generator</h2>
+		For an introduction to the game, <a href="https://en.wikipedia.org/wiki/Projective_Set_(game)">here</a>. To play the game, <a href="https://www.ocf.berkeley.edu/~dadams/proset/">here</a>.
 		<h3>Cards</h3>
 		<ul>
 		    <li>Card dimension: <input id="card-width" type="number" value="64"/>mm x <input id="card-height" type="number" value="89"/>mm</li>
-		    <li>Number of lines: <input id="card-line-number" type="number" value="3"/></li>
-		    <li>Number of column: <input id="card-column-number" type="number" value="2"/></li>
+		    <li>Lines x columns: <input id="card-line-number" type="number" value="3"/>x<input id="card-column-number" type="number" value="2"/></li>
+		    <li>Background image: <input class="file-input" type="file" id="background-input"></li>
 		</ul>
 		<h3>Items</h3>
-		Number of items : 6
-		<ul>
+		Number of items : <input name="" type="number" value="6" id="n-item"/>
+		<ul id="list-inputs">
 		    <li>
-			Item 0: <input type="file" id="file0">
+			Item 0: <input class="file-input" type="file" id="file0">
 		    </li>
 		    <li>
-			Item 1: <input type="file" id="file1">
+			Item 1: <input class="file-input" type="file" id="file1">
 		    </li>
 		    <li>
-			Item 2: <input type="file" id="file2">
+			Item 2: <input class="file-input" type="file" id="file2">
 		    </li>
 		    <li>
-			Item 3: <input type="file" id="file3">
+			Item 3: <input class="file-input" type="file" id="file3">
 		    </li>
 		    <li>
-			Item 4: <input type="file" id="file4">
+			Item 4: <input class="file-input" type="file" id="file4">
 		    </li>
 		    <li>
-			Item 5: <input type="file" id="file5">
+			Item 5: <input class="file-input" type="file" id="file5">
 		    </li>
 		</ul>
 		<h3>Print options</h3>

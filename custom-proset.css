@@ -5,6 +5,7 @@
     /* margin-top: 100px; */
     height:89mm;
     width: 64mm;
+    background-size: cover;
 }
 
 
@@ -44,6 +45,9 @@ input[type="number"] {
     left:0px;
 }
 
+.file-input {
+    max-width: 60%;
+}
 
 /* .customSizeInput { */
 /*     display:none; */

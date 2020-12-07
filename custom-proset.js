@@ -17,29 +17,31 @@ let fitInBox = (image, x, y,lx, ly) => {
     // cardElem.style.height = newY+"px";
 };
 
-let updateItem = function(i) {
-    let image = document.querySelector("#img-item-"+i);
-    let reader  = new FileReader();
-    let [dX,dY] = [document.querySelector(".card").offsetWidth, document.querySelector(".card").offsetHeight];
-    let file = document.querySelector('#file'+i).files[0];
-    let rx = 3/4, ry=3/4;
+let placeItem = (image,i) => {
     let [lineNumber, columnNumber] = [parseInt(document.querySelector("#card-line-number").value), parseInt(document.querySelector("#card-column-number").value)];
-    console.log([lineNumber, columnNumber]);
+    let [dX,dY] = [document.querySelector(".card").offsetWidth, document.querySelector(".card").offsetHeight];
+    let rx = 3/4, ry=3/4;
+    let lX = (1-rx)/(columnNumber+1)*dX;
+    let LX = (rx)/columnNumber*dX;
+    let lY = (1-ry)/(lineNumber+1)*dY;
+    let LY = (ry)/(lineNumber)*dY;
+    let boxX,boxY,boxLX=LX,boxLY=LY;
+
+    boxX = lX + (i%columnNumber)*(LX+lX);
+    boxY = lY + Math.floor(i/columnNumber)*(lY+LY);
+
+    fitInBox(image, boxX, boxY, boxLX, boxLY);
+    
+};
+
+let updateItem = function(i) {
+    let image = (typeof(i) == "number") ? document.querySelector("#img-item-"+i) : i;
+    let reader  = new FileReader();
+    let file = document.querySelector('#file'+i).files[0];
     reader.addEventListener("load", function () {
 	image.onload= () => {
-	    let lX = (1-rx)/(columnNumber+1)*dX;
-	    let LX = (rx)/columnNumber*dX;
-	    let lY = (1-ry)/(lineNumber+1)*dY;
-	    let LY = (ry)/(lineNumber)*dY;
-	    let boxX,boxY,boxLX=LX,boxLY=LY;
-
-	    boxX = lX + (i%columnNumber)*(LX+lX);
-	    boxY = lY + Math.floor(i/columnNumber)*(lY+LY);
-
-	    fitInBox(image, boxX, boxY, boxLX, boxLY);
-	    // image.style.top = (dY/4-image.offsetHeight/2+Math.floor(i/2)*dY/4)+"px";
+	    placeItem(image,i);
 	};
-
 	image.src = reader.result;
     });
     if(file) {
@@ -50,6 +52,21 @@ let updateItem = function(i) {
 for(let i=0; i<6;i++) {
     document.querySelector("#file"+i).addEventListener("change", () => {updateItem(i);});
 }
+
+let updateBackground = function() {
+    let reader  = new FileReader();
+    let file = document.querySelector('#background-input').files[0];
+    // let image = document.querySelector("#card-background");
+    reader.addEventListener("load", function () {
+	// image.src = reader.result;
+	document.querySelector(".card").style.backgroundImage = "url("+ reader.result +")";
+    });
+    if(file) {
+	reader.readAsDataURL(file);
+    }
+};
+
+document.querySelector("#background-input").addEventListener("change", () => {updateBackground();});
 
 let getCoordInElem = (ev) => {
     return [ev.pageX - ev.target.offsetLeft, ev.pageY - ev.target.offsetTop];
@@ -123,6 +140,26 @@ moveTool.mouseMove = (ev) => {
     }
 };
 
+////////////////////////////::
+// Redispose Tool
+////////////////////////////::
+
+let redisposeTool = new Object();
+redisposeTool.elem = document.querySelector("#redispose-tool");
+redisposeTool.mouseUp = (ev) => {
+};
+redisposeTool.mouseDown = (ev) => {
+};
+redisposeTool.mouseClick = (ev) => {
+    console.log(ev.target);
+    if(ev.target.classList.contains("item")){
+	placeItem(ev.target, parseInt(ev.target.getAttribute("item-number")));
+    }
+    
+};
+redisposeTool.mouseMove = (ev) => {
+};
+
 let noTool = new Object();
 noTool.mouseUp = () => {};
 noTool.mouseDown = () => {};
@@ -141,6 +178,7 @@ setCurrentTool(noTool);
 
 document.querySelector("#scale-tool").addEventListener("click", () => {setCurrentTool(scaleTool);});
 document.querySelector("#move-tool").addEventListener("click", () => {setCurrentTool(moveTool);});
+document.querySelector("#redispose-tool").addEventListener("click", () => {setCurrentTool(redisposeTool);});
 
 document.querySelectorAll("#card-container").forEach((item) =>{
     item.addEventListener("mouseup", (ev) => {currentTool.mouseUp(ev);});
@@ -207,14 +245,19 @@ let print = () => {
     let docu = new jspdf.jsPDF(landscape ? "l" : "p", "mm", pageDim);
 	
     docu.setDrawColor(220,220,220);
+
+    let nItem = document.querySelectorAll(".item").length;
     
-    for(let n=1 ; n<Math.pow(2,6) ; n++){
+    for(let n=1 ; n<Math.pow(2,nItem) ; n++){
 	console.log("étape", n);
 	// docu.rect((n-1)%3*64+0,0,64,89);
 	if((n-1)%(nx*ny)==0 && n>1)
 	    docu.addPage();
 	// console.log("rect",margin+(n-1)%(nx)*cardDimX,margin+Math.floor((n-1)%(nx*ny)/(nx))*cardDimY+0,cardDimX,cardDimY);
 	let [cx,cy,lx,ly] = [margin+(n-1)%(nx)*cardDimX,margin+Math.floor((n-1)%(nx*ny)/(nx))*cardDimY+0,cardDimX,cardDimY];
+	if(document.querySelector(".card").style.backgroundImage != "") {
+	    docu.addImage(document.querySelector(".card").style.backgroundImage.substring("5", document.querySelector(".card").style.backgroundImage.length-2), cx,cy,lx,ly);
+	}
 	if(crossChoice == "intersection"){
 	    printCross(docu,cx,cy);
 	    printCross(docu,cx+lx,cy);
@@ -287,6 +330,39 @@ document.querySelector("#card-height").addEventListener("change", updateCardSize
 
 updateCardSize();
 
+
+let addNewItem = () => {
+    let nItem= document.querySelectorAll(".item").length;
+    let newItem = document.createElement("img");
+    document.querySelector(".card").appendChild(newItem);
+    newItem.outerHTML = '<img width="100px" draggable="false" class="item" alt="" id="img-item-'+nItem+'" item-number="'+nItem+'"/>';
+    let newInput = document.createElement("li");
+    document.querySelector("#list-inputs").appendChild(newInput);
+    newInput.outerHTML = '<li>Item '+nItem+': <input class="file-input" type="file" id="file'+nItem+'"></li>';
+    console.log('<li>Item '+nItem+': <input class="file-input" type="file" id="file'+nItem+'"></li>');
+    console.log(newInput);
+    document.querySelector("#file"+nItem).addEventListener("change", () => {updateItem(nItem);});
+};
+let removeItem = () => {
+    let nItem= document.querySelectorAll(".item").length;
+    document.querySelectorAll("#list-inputs li")[nItem-1].remove();
+    document.querySelectorAll(".item")[nItem-1].remove();
+};
+
+document.querySelector("#n-item").addEventListener("change", () => {
+    let newValue = parseInt(document.querySelector("#n-item").value);
+    let oldValue = document.querySelectorAll(".item").length;
+    while(oldValue != newValue && !isNaN(newValue)) {
+	if(newValue<oldValue) {
+	    removeItem();
+	    oldValue--;
+	}
+	else {
+	    addNewItem();
+	    oldValue++;
+	}
+    }
+});
 
 ////////////////////////////::
 // Pour plus tard (svg to jpg)
