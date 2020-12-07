@@ -51,6 +51,7 @@ let updateItem = function(i) {
 
 for(let i=0; i<6;i++) {
     document.querySelector("#file"+i).addEventListener("change", () => {updateItem(i);});
+    updateItem(i);
 }
 
 let updateBackground = function() {
@@ -66,7 +67,22 @@ let updateBackground = function() {
     }
 };
 
+let otherSideDataUrl = "";
+let saveOtherSide = function() {
+    let reader  = new FileReader();
+    let file = document.querySelector('#other-side-input').files[0];
+    reader.addEventListener("load", function () {
+	otherSideDataUrl = reader.result;
+    });
+    if(file) {
+	reader.readAsDataURL(file);
+    }
+};
+
 document.querySelector("#background-input").addEventListener("change", () => {updateBackground();});
+updateBackground();
+document.querySelector("#other-side-input").addEventListener("change", () => {saveOtherSide();});
+saveOtherSide();
 
 let getCoordInElem = (ev) => {
     return [ev.pageX - ev.target.offsetLeft, ev.pageY - ev.target.offsetTop];
@@ -95,6 +111,9 @@ scaleTool.mouseDown = (ev) => {
 	ev.preventDefault();
 	scaleTool.originClick = [ev.pageX, ev.pageY];
 	scaleTool.originalWidth = ev.target.width;
+	scaleTool.originalHeight = ev.target.offsetHeight;
+	scaleTool.originalLeft = ev.target.offsetLeft;
+	scaleTool.originalTop = ev.target.offsetTop;
 	scaleTool.originTarget = ev.target;
     }
 };
@@ -102,6 +121,8 @@ scaleTool.mouseClick = (ev) => {console.log(ev);};
 scaleTool.mouseMove = (ev) => {
     if(typeof (scaleTool.originClick) != "undefined") {
 	scaleTool.originTarget.width = scaleTool.originalWidth + (ev.pageX - scaleTool.originClick[0]);
+	scaleTool.originTarget.style.left = (scaleTool.originalLeft - (ev.pageX - scaleTool.originClick[0])/2)+"px";
+	scaleTool.originTarget.style.top = ((scaleTool.originalTop + (scaleTool.originalHeight - scaleTool.originTarget.offsetHeight)/2))+"px";
     }
 };
 
@@ -247,17 +268,32 @@ let print = () => {
     docu.setDrawColor(220,220,220);
 
     let nItem = document.querySelectorAll(".item").length;
-    
+    let nPerPage = 0;
     for(let n=1 ; n<Math.pow(2,nItem) ; n++){
 	console.log("étape", n);
 	// docu.rect((n-1)%3*64+0,0,64,89);
-	if((n-1)%(nx*ny)==0 && n>1)
+	if((n-1)%(nx*ny)==0 && n>1) {
 	    docu.addPage();
+	    if(otherSideDataUrl != "") {
+		for(let n2=1; n2<=nPerPage; n2++) {
+		    let [cx,cy,lx,ly] = [margin+(n2-1)%(nx)*cardDimX,margin+Math.floor((n2-1)%(nx*ny)/(nx))*cardDimY+0,cardDimX,cardDimY];
+		    docu.addImage(otherSideDataUrl, pageDimX-cx-lx,cy,lx,ly);
+		}
+		docu.addPage();
+		nPerPage=0;
+	    }
+	}
+	nPerPage++;
 	// console.log("rect",margin+(n-1)%(nx)*cardDimX,margin+Math.floor((n-1)%(nx*ny)/(nx))*cardDimY+0,cardDimX,cardDimY);
 	let [cx,cy,lx,ly] = [margin+(n-1)%(nx)*cardDimX,margin+Math.floor((n-1)%(nx*ny)/(nx))*cardDimY+0,cardDimX,cardDimY];
 	if(document.querySelector(".card").style.backgroundImage != "") {
 	    docu.addImage(document.querySelector(".card").style.backgroundImage.substring("5", document.querySelector(".card").style.backgroundImage.length-2), cx,cy,lx,ly);
+	    // docu.addImage(document.querySelector('#background-input').files[0].stream(), cx,cy,lx,ly);
 	}
+	// if(otherSideDataUrl != "") {
+	//     docu.addImage(otherSideDataUrl, cx,cy,lx,ly);
+	    // docu.addImage(document.querySelector('#background-input').files[0].stream(), cx,cy,lx,ly);
+	// }
 	if(crossChoice == "intersection"){
 	    printCross(docu,cx,cy);
 	    printCross(docu,cx+lx,cy);
@@ -279,6 +315,13 @@ let print = () => {
 	    }
  	});
     }
+    if(otherSideDataUrl != "") {
+	docu.addPage();
+	for(let n2=1; n2<=nPerPage; n2++) {
+	    let [cx,cy,lx,ly] = [margin+(n2-1)%(nx)*cardDimX,margin+Math.floor((n2-1)%(nx*ny)/(nx))*cardDimY+0,cardDimX,cardDimY];
+	    docu.addImage(otherSideDataUrl, pageDimX-cx-lx,cy,lx,ly);
+	}
+    }
     docu.save("my.pdf");
 
 };
@@ -299,6 +342,7 @@ let updateFormat = () => {
 };
 updateFormat();
 document.querySelector("#print-format").addEventListener("change", updateFormat);
+updateFormat();
 
 
 let updateCardSize = () => {
@@ -327,7 +371,6 @@ let updateCardSize = () => {
 
 document.querySelector("#card-width").addEventListener("change", updateCardSize);
 document.querySelector("#card-height").addEventListener("change", updateCardSize);
-
 updateCardSize();
 
 
@@ -349,7 +392,7 @@ let removeItem = () => {
     document.querySelectorAll(".item")[nItem-1].remove();
 };
 
-document.querySelector("#n-item").addEventListener("change", () => {
+let updateNItem = () => {
     let newValue = parseInt(document.querySelector("#n-item").value);
     let oldValue = document.querySelectorAll(".item").length;
     while(oldValue != newValue && !isNaN(newValue)) {
@@ -361,8 +404,10 @@ document.querySelector("#n-item").addEventListener("change", () => {
 	    addNewItem();
 	    oldValue++;
 	}
-    }
-});
+    }    
+};
+document.querySelector("#n-item").addEventListener("change", updateNItem);
+updateNItem();
 
 ////////////////////////////::
 // Pour plus tard (svg to jpg)
