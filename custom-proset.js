@@ -38,7 +38,7 @@ let updateItem = function(i) {
     let image = (typeof(i) == "number") ? document.querySelector("#img-item-"+i) : i;
     let reader  = new FileReader();
     let file = document.querySelector('#file'+i).files[0];
-    if(file && file.type != "image/png" && file.type != "image/jpg") {
+    if(file && file.type != "image/png" && file.type != "image/jpeg") {
 	alert("Only jpg and png files are allowed");
 	document.querySelector('#file'+i).value="";
 	return;
@@ -62,7 +62,7 @@ for(let i=0; i<6;i++) {
 let updateBackground = function() {
     let reader  = new FileReader();
     let file = document.querySelector('#background-input').files[0];
-    if(file && file.type != "image/png" && file.type != "image/jpg") {
+    if(file && file.type != "image/png" && file.type != "image/jpeg") {
 	alert("Only jpg and png files are allowed");
 	document.querySelector('#background-input').value="";
 	return;
@@ -81,7 +81,7 @@ let otherSideDataUrl = "";
 let saveOtherSide = function() {
     let reader  = new FileReader();
     let file = document.querySelector('#other-side-input').files[0];
-    if(file && file.type != "image/png" && file.type != "image/jpg") {
+    if(file && file.type != "image/png" && file.type != "image/jpeg") {
 	alert("Only jpg and png files are allowed");
 	document.querySelector('#other-side-input').value="";
 	return;
