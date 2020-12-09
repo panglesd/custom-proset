@@ -4,11 +4,12 @@ let readFile = (file) => {
 	if(file.type == "image/svg+xml") {
 	    reader.addEventListener("load", () => {
 		// alert("here");
-		base64SvgToBase64Png(reader.result, 50).then((data) => {
+		console.log(reader.result);
+		svgToBase64Png(reader.result, 50).then((data) => {
 		    resolve(data);
 		});
 	    });
-	reader.readAsDataURL(file);
+	    reader.readAsText(file);
 	}
     });
 };
@@ -469,7 +470,7 @@ updateNItem();
  * @param width target width in pixel of PNG image
  * @return {Promise<String>} resolves to png data url of the image
  */
-function base64SvgToBase64Png (originalBase64, width) {
+function svgToBase64Png (originalSvg, width) {
     return new Promise(resolve => {
 	let img = document.createElement('img');
 	img.classList.add("debug");
@@ -480,6 +481,12 @@ function base64SvgToBase64Png (originalBase64, width) {
 	    document.body.appendChild(canvas);
 	    console.log(canvas);
 	    let ratio = (img.clientWidth / img.clientHeight) || 1;
+	    // console.log((originalBase64));
+	    if(img.naturalWidth*img.naturalHeight == 0) {
+		alert("Your svg file has no width and height defined. This won't work in Firefox due to a longstanding bug. Either use another browser, or manually add size in your svg file");
+		// console.log(btoa(originalBase64));
+		// console.log(atob(originalBase64));
+	    }
 	    document.body.removeChild(img);
 	    canvas.width = width*10;
 	    canvas.height = canvas.width / ratio;
@@ -495,7 +502,16 @@ function base64SvgToBase64Png (originalBase64, width) {
 		resolve(null);
 	    }
 	};
-	img.src = originalBase64;
+	var parser = new DOMParser();
+	var result = parser.parseFromString(originalSvg, 'text/xml');
+	var inlineSVG = result.getElementsByTagName("svg")[0];
+	if(!inlineSVG.hasAttribute("width") || !inlineSVG.hasAttribute("height")) {
+	    inlineSVG.setAttribute('width', '48px');
+	    inlineSVG.setAttribute('height', '48px');
+	}
+	var svg64 = btoa(new XMLSerializer().serializeToString(result));
+	var image64 = 'data:image/svg+xml;base64,' + svg64;
+	img.src = image64;
     });
 }
 
