@@ -1,3 +1,19 @@
+let readFile = (file) => {
+    return new Promise((resolve) => {
+	let reader = new FileReader();
+	if(file.type == "image/svg+xml") {
+	    reader.addEventListener("load", () => {
+		// alert("here");
+		base64SvgToBase64Png(reader.result, 100).then((data) => {
+		    resolve(data);
+		});
+	    });
+	reader.readAsDataURL(file);
+	}
+    });
+};
+
+
 let fitInBox = (image, x, y,lx, ly) => {
     let [imageX, imageY ] = [image.offsetWidth, image.offsetHeight];
     let newX, newY;
@@ -38,7 +54,18 @@ let updateItem = function(i) {
     let image = (typeof(i) == "number") ? document.querySelector("#img-item-"+i) : i;
     let reader  = new FileReader();
     let file = document.querySelector('#file'+i).files[0];
-    if(file && file.type != "image/png" && file.type != "image/jpeg") {
+    if(file && file.type == "image/svg+xml") {
+	readFile(file).then((data) => {
+	    // alert(data);
+	    image.onload= () => {
+		placeItem(image,i);
+	    };
+	    image.src = data;
+	    
+	});
+	return;
+    }
+    if(file && file.type != "image/png" && file.type != "image/jpeg" && file.type != "image/svg+xml") {
 	alert("Only jpg and png files are allowed");
 	document.querySelector('#file'+i).value="";
 	return;
@@ -62,9 +89,17 @@ for(let i=0; i<6;i++) {
 let updateBackground = function() {
     let reader  = new FileReader();
     let file = document.querySelector('#background-input').files[0];
-    if(file && file.type != "image/png" && file.type != "image/jpeg") {
-	alert("Only jpg and png files are allowed");
+    // alert(file ?  file.type:"");
+    if(file && file.type != "image/png" && file.type != "image/jpeg" && file.type != "image/svg+xml") {
+	alert("Only jpg, svg and png files are allowed");
 	document.querySelector('#background-input').value="";
+	return;
+    }
+    if(file && file.type == "image/svg+xml") {
+	readFile(file).then((data) => {
+	    // alert(data);
+	    document.querySelector(".card").style.backgroundImage = "url("+ data +")";	    
+	});
 	return;
     }
     // let image = document.querySelector("#card-background");
@@ -437,9 +472,11 @@ updateNItem();
 function base64SvgToBase64Png (originalBase64, width) {
     return new Promise(resolve => {
 	let img = document.createElement('img');
+	img.classList.add("debug");
 	img.onload = function () {
 	    document.body.appendChild(img);
 	    let canvas = document.createElement("canvas");
+	    canvas.classList.add("debug");
 	    document.body.appendChild(canvas);
 	    console.log(canvas);
 	    let ratio = (img.clientWidth / img.clientHeight) || 1;
@@ -450,8 +487,10 @@ function base64SvgToBase64Png (originalBase64, width) {
 	    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 	    try {
 		let data = canvas.toDataURL('image/png');
+		document.body.removeChild(canvas);		
 		console.log("canvas.width", canvas.width);
-		resolve([data, canvas.width, canvas.height]);
+		// resolve([data, canvas.width, canvas.height]);
+		resolve(data);
 	    } catch (e) {
 		resolve(null);
 	    }
@@ -459,3 +498,4 @@ function base64SvgToBase64Png (originalBase64, width) {
 	img.src = originalBase64;
     });
 }
+
