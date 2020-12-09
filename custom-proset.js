@@ -4,7 +4,7 @@ let readFile = (file) => {
 	if(file.type == "image/svg+xml") {
 	    reader.addEventListener("load", () => {
 		// alert("here");
-		base64SvgToBase64Png(reader.result, 100).then((data) => {
+		base64SvgToBase64Png(reader.result, 50).then((data) => {
 		    resolve(data);
 		});
 	    });
