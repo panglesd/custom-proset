@@ -8,6 +8,11 @@
     background-size: 100% 100%;
 }
 
+.gh-mark {
+    position: fixed;
+    left:0;
+    top:0;
+}
 
 .ui {
     /* position: fixed; */
