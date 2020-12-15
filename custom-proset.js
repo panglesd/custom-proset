@@ -51,6 +51,30 @@ let placeItem = (image,i) => {
     
 };
 
+let defaultItem = function(i) {
+    let svg = document.querySelector("svg");
+    let color;
+    switch(i) {
+    case 0: color = "rgb(212,0,0)"; break;
+    case 1: color = "rgb(255,102,0)"; break;
+    case 2: color = "rgb(255,204,0)"; break;
+    case 3: color = "rgb(136, 170, 0)"; break;
+    case 4: color = "rgb(0, 102, 255)"; break;
+    case 5: color = "rgb(102, 0, 128)"; break;
+    default:     color = "rgb("+Math.floor(Math.random() * 255) + ","+Math.floor(Math.random() * 255) + ","+Math.floor(Math.random() * 255) + ")"; break;
+	
+    }
+
+
+    svg.querySelector("circle").style.fill = color;
+    var svg64 = btoa(new XMLSerializer().serializeToString(svg));
+    var image64 = 'data:image/svg+xml;base64,' + svg64;
+    let image = (typeof(i) == "number") ? document.querySelector("#img-item-"+i) : i;
+    image.onload= () => {
+	placeItem(image,i);
+    };
+    image.src = image64;
+};
 let updateItem = function(i) {
     let image = (typeof(i) == "number") ? document.querySelector("#img-item-"+i) : i;
     let reader  = new FileReader();
@@ -84,6 +108,7 @@ let updateItem = function(i) {
 
 for(let i=0; i<6;i++) {
     document.querySelector("#file"+i).addEventListener("change", () => {updateItem(i);});
+    document.querySelector("#default-"+i).addEventListener("click", () => {defaultItem(i);});
     updateItem(i);
 }
 
@@ -432,10 +457,11 @@ let addNewItem = () => {
     newItem.outerHTML = '<img width="100px" draggable="false" class="item" alt="" id="img-item-'+nItem+'" item-number="'+nItem+'"/>';
     let newInput = document.createElement("li");
     document.querySelector("#list-inputs").appendChild(newInput);
-    newInput.outerHTML = '<li>Item '+nItem+': <input class="file-input" type="file" id="file'+nItem+'"></li>';
+    newInput.outerHTML = '<li>Item '+nItem+': <input class="file-input" type="file" id="file'+nItem+'"><input name="" type="button" id="default-'+nItem+'" value="Default"/></li>';
     console.log('<li>Item '+nItem+': <input class="file-input" type="file" id="file'+nItem+'"></li>');
     console.log(newInput);
     document.querySelector("#file"+nItem).addEventListener("change", () => {updateItem(nItem);});
+    document.querySelector("#default-"+nItem).addEventListener("click", () => {defaultItem(nItem);});
 };
 let removeItem = () => {
     let nItem= document.querySelectorAll(".item").length;
