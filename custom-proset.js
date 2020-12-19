@@ -541,3 +541,75 @@ function svgToBase64Png (originalSvg, width) {
     });
 }
 
+function save() {
+
+    let saveXMLDoc = document.implementation.createDocument(null, "custom-proset");
+
+    let root = saveXMLDoc.firstChild;
+
+    let card = saveXMLDoc.createElement("card");
+    card.setAttribute("width", document.querySelector("#card-width").value);
+    card.setAttribute("height", document.querySelector("#card-height").value);
+    card.setAttribute("line-number", document.querySelector("#card-line-number").value);
+    card.setAttribute("column-number", document.querySelector("#card-column-number").value);
+    card.setAttribute("background-image", document.querySelector(".card").style.backgroundImage);
+    card.setAttribute("other-side-image", otherSideDataUrl);
+    
+    root.appendChild(card);
+
+    let items = saveXMLDoc.createElement("items");
+    document.querySelectorAll(".item").forEach((item) => {
+	let itemXML = saveXMLDoc.createElement("item");
+	itemXML.setAttribute("width", item.width);
+	itemXML.setAttribute("left", item.offsetLeft);
+	itemXML.setAttribute("top", item.offsetTop);
+	itemXML.setAttribute("src", item.src);
+	items.appendChild(itemXML);
+    });
+    root.appendChild(items);
+    let xmlText = (new XMLSerializer().serializeToString(saveXMLDoc));
+    
+    var element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(xmlText));
+    element.setAttribute('download', "custom-proset.txt");
+
+    element.style.display = 'none';
+    document.body.appendChild(element);
+
+    element.click();
+    
+    console.log(xmlText);
+    
+    document.body.removeChild(element);
+}
+
+function load(file) {
+    let parser = new DOMParser();
+    let xmlDoc = parser.parseFromString(file,"text/xml");
+    let card = xmlDoc.querySelector("card");
+    document.querySelector("#card-width").value = card.getAttribute("width");
+    document.querySelector("#card-width").dispatchEvent(new Event("change"));
+
+    document.querySelector("#card-height").value = card.getAttribute("height");
+    document.querySelector("#card-height").dispatchEvent(new Event("change"));
+
+    document.querySelector("#card-column-number").value = card.getAttribute("column-number");
+    document.querySelector("#card-column-number").dispatchEvent(new Event("change"));
+
+    document.querySelector("#card-line-number").value = card.getAttribute("line-number");
+    document.querySelector("#card-line-number").dispatchEvent(new Event("change"));
+
+    document.querySelector(".card").style.backgroundImage = card.getAttribute("background-image");
+
+    otherSideDataUrl = card.getAttribute("other-side-image");
+
+    xmlDoc.querySelectorAll("items item").forEach((item,i) => {
+	document.querySelectorAll(".card .item")[i].src = item.getAttribute("src");
+	document.querySelectorAll(".card .item")[i].left = item.getAttribute("left");
+	document.querySelectorAll(".card .item")[i].top = item.getAttribute("top");
+	document.querySelectorAll(".card .item")[i].width = item.getAttribute("width");
+    });
+
+}
+
+document.querySelector("#save-input").addEventListener("click", save);
