@@ -76,6 +76,7 @@ let defaultItem = function(i) {
     image.src = image64;
 };
 let updateItem = function(i) {
+    console.log("updateItem called");
     let image = (typeof(i) == "number") ? document.querySelector("#img-item-"+i) : i;
     let reader  = new FileReader();
     let file = document.querySelector('#file'+i).files[0];
@@ -604,12 +605,26 @@ function load(file) {
     otherSideDataUrl = card.getAttribute("other-side-image");
 
     xmlDoc.querySelectorAll("items item").forEach((item,i) => {
-	document.querySelectorAll(".card .item")[i].src = item.getAttribute("src");
-	document.querySelectorAll(".card .item")[i].left = item.getAttribute("left");
-	document.querySelectorAll(".card .item")[i].top = item.getAttribute("top");
-	document.querySelectorAll(".card .item")[i].width = item.getAttribute("width");
+	let image = document.querySelectorAll(".card .item")[i];
+	image.onload= () => {
+	    image.style.left = item.getAttribute("left")+"px";
+	    image.style.top = item.getAttribute("top")+"px";
+	    image.width = item.getAttribute("width");
+	};
+	image.src = item.getAttribute("src");
     });
 
 }
+let loadCaller = () => {
+    let reader  = new FileReader();
+    let file = document.querySelector('#load-input').files[0];
+    reader.addEventListener("load", function () {
+	load(reader.result);
+    });
+    if(file) {
+	reader.readAsText(file);
+    }
+};
 
 document.querySelector("#save-input").addEventListener("click", save);
+document.querySelector("#load-input").addEventListener("change", loadCaller);
