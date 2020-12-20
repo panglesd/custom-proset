@@ -37,7 +37,8 @@ let fitInBox = (image, x, y,lx, ly) => {
 let placeItem = (image,i) => {
     let [lineNumber, columnNumber] = [parseInt(document.querySelector("#card-line-number").value), parseInt(document.querySelector("#card-column-number").value)];
     let [dX,dY] = [document.querySelector(".card").offsetWidth, document.querySelector(".card").offsetHeight];
-    let rx = 3/4, ry=3/4;
+    let rx = parseFloat(document.querySelector("#ratio-number").value), ry=parseFloat(document.querySelector("#ratio-number").value);
+    // let rx = 3/4, ry=3/4;
     let lX = (1-rx)/(columnNumber+1)*dX;
     let LX = (rx)/columnNumber*dX;
     let lY = (1-ry)/(lineNumber+1)*dY;
@@ -553,6 +554,7 @@ function save() {
     card.setAttribute("height", document.querySelector("#card-height").value);
     card.setAttribute("line-number", document.querySelector("#card-line-number").value);
     card.setAttribute("column-number", document.querySelector("#card-column-number").value);
+    card.setAttribute("ratio-number", document.querySelector("#ratio-number").value);
     card.setAttribute("background-image", document.querySelector(".card").style.backgroundImage);
     card.setAttribute("other-side-image", otherSideDataUrl);
     
@@ -599,6 +601,9 @@ function load(file) {
 
     document.querySelector("#card-line-number").value = card.getAttribute("line-number");
     document.querySelector("#card-line-number").dispatchEvent(new Event("change"));
+
+    document.querySelector("#ratio-number").value = card.getAttribute("ratio-number");
+    document.querySelector("#ratio-number").dispatchEvent(new Event("change"));
 
     document.querySelector(".card").style.backgroundImage = card.getAttribute("background-image");
 
