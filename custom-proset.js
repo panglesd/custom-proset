@@ -293,12 +293,15 @@ document.querySelectorAll("#card-container").forEach((item) =>{
 // Printing
 ////////////////////////////::
 
-let printCross = (docu, x,y) => {
-    docu.line(x-2,y,x+2,y);
-    docu.line(x,y-2,x,y+2);  
-};
+// let printCross = (docu, x,y) => {
+//     docu.line(x-2,y,x+2,y);
+//     docu.line(x,y-2,x,y+2);  
+// };
 
 let print = () => {
+    printFromJSON(prosetToJSON());
+    // printFromXML(prosetToXML());
+    return;
     let cardDim = [parseInt(document.querySelector("#card-width").value), parseInt(document.querySelector("#card-height").value)];
     let [cardDimX, cardDimY] = cardDim;
 
@@ -543,11 +546,20 @@ function svgToBase64Png (originalSvg, width) {
     });
 }
 
-function save() {
-
+function prosetToXML () {
     let saveXMLDoc = document.implementation.createDocument(null, "custom-proset");
 
     let root = saveXMLDoc.firstChild;
+
+    let printOptions = saveXMLDoc.createElement("print-options");
+    printOptions.setAttribute("format", document.querySelector("#print-format [selected]").value);
+    printOptions.setAttribute("custom-width", document.querySelector("#customX").value);
+    printOptions.setAttribute("custom-height", document.querySelector("#customY").value);
+    printOptions.setAttribute("margin", document.querySelector("#print-margin").value);
+    printOptions.setAttribute("orientation", document.querySelector('[name="portrait"]:checked').value);
+    printOptions.setAttribute("delimiter", document.querySelector('[name="delimiter"]:checked').value);
+
+    root.appendChild(printOptions);
 
     let card = saveXMLDoc.createElement("card");
     card.setAttribute("width", document.querySelector("#card-width").value);
@@ -557,23 +569,83 @@ function save() {
     card.setAttribute("ratio-number", document.querySelector("#ratio-number").value);
     card.setAttribute("background-image", document.querySelector(".card").style.backgroundImage);
     card.setAttribute("other-side-image", otherSideDataUrl);
-    
+
+    let cardWidth = document.querySelector(".card").offsetWidth;
+    card.setAttribute( "scale", (parseInt(card.getAttribute("width")))/cardWidth);
+
     root.appendChild(card);
 
     let items = saveXMLDoc.createElement("items");
     document.querySelectorAll(".item").forEach((item) => {
 	let itemXML = saveXMLDoc.createElement("item");
 	itemXML.setAttribute("width", item.width);
+	itemXML.setAttribute("height", item.height);
 	itemXML.setAttribute("left", item.offsetLeft);
 	itemXML.setAttribute("top", item.offsetTop);
 	itemXML.setAttribute("src", item.src);
 	items.appendChild(itemXML);
     });
     root.appendChild(items);
-    let xmlText = (new XMLSerializer().serializeToString(saveXMLDoc));
+    return saveXMLDoc;
+    // return (new XMLSerializer().serializeToString(saveXMLDoc));
+    
+}
+function prosetToJSON () {
+    let json = {};
+
+    let printOptions = {};
+    printOptions["format"] = document.querySelector("#print-format [selected]").value;
+    printOptions["customWidth"] = document.querySelector("#customX").value;
+    printOptions["customHeight"] = document.querySelector("#customY").value;
+    printOptions["margin"] = document.querySelector("#print-margin").value;
+    printOptions["orientation"] = document.querySelector('[name="portrait"]:checked').value;
+    printOptions["delimiter"] = document.querySelector('[name="delimiter"]:checked').value;
+
+    json.printOptions = printOptions;
+
+    let card = {};
+    card["width"] = document.querySelector("#card-width").value;
+    card["height"] = document.querySelector("#card-height").value;
+    card["line-number"] = document.querySelector("#card-line-number").value;
+    card["column-number"] = document.querySelector("#card-column-number").value;
+    card["ratio-number"] = document.querySelector("#ratio-number").value;
+    card["background-image"] = document.querySelector(".card").style.backgroundImage;
+    card["other-side-image"] = otherSideDataUrl;
+
+    let cardWidth = document.querySelector(".card").offsetWidth;
+    card["scale"] = (parseInt(card["width"]))/cardWidth;
+
+    json.card = card;
+
+    let items = [];
+    document.querySelectorAll(".item").forEach((item) => {
+	let itemJSON = {};
+	itemJSON["width"] = item.width;
+	itemJSON["height"] = item.height;
+	itemJSON["left"] = item.offsetLeft;
+	itemJSON["top"] = item.offsetTop;
+	itemJSON["src"] = item.src;
+	items.push(itemJSON);
+    });
+    json.items = items;
+    return json;
+    // return (new XMLSerializer().serializeToString(saveXMLDoc));
+    
+}
+
+function XMLToText(xml) {
+    return (new XMLSerializer().serializeToString(xml));    
+}
+function JSONToText(json) {
+    return (JSON.stringify(json));    
+}
+
+function save() {
+    let jsonText = JSONToText(prosetToJSON());
+    // let xmlText = XMLToText(prosetToXML());
     
     var element = document.createElement('a');
-    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(xmlText));
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(jsonText));
     element.setAttribute('download', "custom-proset.txt");
 
     element.style.display = 'none';
@@ -581,7 +653,7 @@ function save() {
 
     element.click();
     
-    console.log(xmlText);
+    console.log(jsonText);
     
     document.body.removeChild(element);
 }
@@ -590,6 +662,8 @@ function load(file) {
     let parser = new DOMParser();
     let xmlDoc = parser.parseFromString(file,"text/xml");
     let card = xmlDoc.querySelector("card");
+
+    // TODO: Load print-options
     document.querySelector("#card-width").value = card.getAttribute("width");
     document.querySelector("#card-width").dispatchEvent(new Event("change"));
 
@@ -620,11 +694,46 @@ function load(file) {
     });
 
 }
+function loadJSON(file) {
+    let json = JSON.parse(file);
+    let card = json["card"];
+
+    // TODO: Load print-options
+    document.querySelector("#card-width").value = card["width"];
+    document.querySelector("#card-width").dispatchEvent(new Event("change"));
+
+    document.querySelector("#card-height").value = card["height"];
+    document.querySelector("#card-height").dispatchEvent(new Event("change"));
+
+    document.querySelector("#card-column-number").value = card["column-number"];
+    document.querySelector("#card-column-number").dispatchEvent(new Event("change"));
+
+    document.querySelector("#card-line-number").value = card["line-number"];
+    document.querySelector("#card-line-number").dispatchEvent(new Event("change"));
+
+    document.querySelector("#ratio-number").value = card["ratio-number"];
+    document.querySelector("#ratio-number").dispatchEvent(new Event("change"));
+
+    document.querySelector(".card").style.backgroundImage = card["background-image"];
+
+    otherSideDataUrl = card["other-side-image"];
+
+    json.items.forEach((item,i) => {
+	let image = document.querySelectorAll(".card .item")[i];
+	image.onload= () => {
+	    image.style.left = item["left"]+"px";
+	    image.style.top = item["top"]+"px";
+	    image.width = item["width"];
+	};
+	image.src = item["src"];
+    });
+
+}
 let loadCaller = () => {
     let reader  = new FileReader();
     let file = document.querySelector('#load-input').files[0];
     reader.addEventListener("load", function () {
-	load(reader.result);
+	loadJSON(reader.result);
     });
     if(file) {
 	reader.readAsText(file);

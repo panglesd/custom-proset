@@ -83,6 +83,17 @@
 		<input name="" type="button" value="Generate PDF" onclick="print()"/>
 	    </div>
 	</div>
+	<div id="window" style="display:none">
+	    Your file is being created. If you wish to add your creation to the gallery, fill the following form and click on "Submit to the gallery".
+	    <form action="post" target="_blank" action="gallery.php">
+		Name of the cards <input name="name" type="text" value=""/><br/>
+		Author: <input name="author" type="text" value=""/><br/>
+		Comments (optional): <input name="comment" type="text" value=""/><br/>
+		<input name="source" type="hidden" value=""/><br/>
+		<input name="" value="Submit to the gallery" type="submit"/>
+	    </form>
+	</div>
+	<script src="printFromXML.js"></script>
 	<script src="custom-proset.js"></script>
 	<script src="https://unpkg.com/jspdf@latest/dist/jspdf.umd.js"></script>
 	<a class="gh-mark" href="https://github.com/panglesd/custom-proset"><img alt="" src="GitHub-Mark-32px.png"/></a>
