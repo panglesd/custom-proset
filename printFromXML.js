@@ -126,7 +126,7 @@ let printFromXML = (proXML) => {
 };
 
 
-let printFromJSON = (json) => {
+async function printFromJSON (json) {
     let card = json.card;
     let printOptions = json.printOptions;
     let cardDim = [parseInt(card.width), parseInt(card.height)];
@@ -154,12 +154,14 @@ let printFromJSON = (json) => {
 
     let margin = parseInt(printOptions["margin"]);
     
+    let docu = new jspdf.jsPDF(landscape ? "l" : "p", "mm", pageDim);
+    
     let nx = Math.floor((pageDimX-2*margin)/(card["width"]));
     let ny = Math.floor((pageDimY-2*margin)/(card["height"]));
 
     if(nx * ny == 0) {
 	alert("card too big or paper size too small");
-	return;
+	return docu;
     }
     console.log("nx et ny",nx,ny);
 
@@ -176,7 +178,6 @@ let printFromJSON = (json) => {
     // else if(document.querySelector("input[value=\"intersection\"]").checked)
     // 	crossChoice = "intersection";
 
-    let docu = new jspdf.jsPDF(landscape ? "l" : "p", "mm", pageDim);
 	
     docu.setDrawColor(220,220,220);
 
@@ -185,51 +186,63 @@ let printFromJSON = (json) => {
     let nItem = document.querySelectorAll(".item").length;
     let nPerPage = 0;
     let backgroundImage = card["background-image"];
+
+    async function createCard(n) {
+	return new Promise((resolve) => {
+	    setTimeout(() => {
+		if((n-1)%(nx*ny)==0 && n>1) {
+		    docu.addPage();
+		    if(otherSideDataUrl != "") {
+			for(let n2=1; n2<=nPerPage; n2++) {
+			    let [cx,cy,lx,ly] = [margin+(n2-1)%(nx)*cardDimX,margin+Math.floor((n2-1)%(nx*ny)/(nx))*cardDimY+0,cardDimX,cardDimY];
+			    docu.addImage(otherSideDataUrl, pageDimX-cx-lx,cy,lx,ly);
+			}
+			docu.addPage();
+			nPerPage=0;
+		    }
+		}
+		nPerPage++;
+		// console.log("rect",margin+(n-1)%(nx)*cardDimX,margin+Math.floor((n-1)%(nx*ny)/(nx))*cardDimY+0,cardDimX,cardDimY);
+		let [cx,cy,lx,ly] = [margin+(n-1)%(nx)*cardDimX,margin+Math.floor((n-1)%(nx*ny)/(nx))*cardDimY+0,cardDimX,cardDimY];
+		if(backgroundImage != "") {
+		    docu.addImage(backgroundImage.substring("5", backgroundImage.length-2), cx,cy,lx,ly);
+		    // docu.addImage(document.querySelector('#background-input').files[0].stream(), cx,cy,lx,ly);
+		}
+		// if(otherSideDataUrl != "") {
+		//     docu.addImage(otherSideDataUrl, cx,cy,lx,ly);
+		// docu.addImage(document.querySelector('#background-input').files[0].stream(), cx,cy,lx,ly);
+		// }
+		if(crossChoice == "intersection"){
+		    printCross(docu,cx,cy);
+		    printCross(docu,cx+lx,cy);
+		    printCross(docu,cx,cy+ly);
+		    printCross(docu,cx+lx,cy+ly);
+		}
+		else if (crossChoice == "box")
+		    docu.rect(cx,cy,lx,ly);
+		json.items.forEach((item,i) => {
+		    if((n >> i) % 2) {
+			// console.log("image", i, "ajoutée");
+		    } else {
+			
+		    }
+		    if(item.src != "" && (n >> i) % 2) {
+			let [x,y] = getCoordOfElem3(item);
+			// console.log("addImage",item.src, margin+(n-1)%(nx)*cardDimX+x*scale, margin+Math.floor((n-1)%(nx*ny)/nx)*cardDimY+y*scale, item.width*scale, item.height*scale);
+			docu.addImage(item["src"], margin+(n-1)%(nx)*cardDimX+x*scale, margin+Math.floor((n-1)%(nx*ny)/nx)*cardDimY+y*scale, item["width"]*scale, item["height"]*scale);
+		    }
+ 		});	
+		resolve();
+	    });
+	});
+    }
+    
     for(let n=1 ; n<Math.pow(2,nItem) ; n++){
+	// TODO: change loop to function calls to be able to update dom inbetween
+	document.querySelector("#avancement").innerText=n+"/"+(Math.pow(2,nItem)-1);
+	await createCard(n);
 	console.log("étape", n);
 	// docu.rect((n-1)%3*64+0,0,64,89);
-	if((n-1)%(nx*ny)==0 && n>1) {
-	    docu.addPage();
-	    if(otherSideDataUrl != "") {
-		for(let n2=1; n2<=nPerPage; n2++) {
-		    let [cx,cy,lx,ly] = [margin+(n2-1)%(nx)*cardDimX,margin+Math.floor((n2-1)%(nx*ny)/(nx))*cardDimY+0,cardDimX,cardDimY];
-		    docu.addImage(otherSideDataUrl, pageDimX-cx-lx,cy,lx,ly);
-		}
-		docu.addPage();
-		nPerPage=0;
-	    }
-	}
-	nPerPage++;
-	// console.log("rect",margin+(n-1)%(nx)*cardDimX,margin+Math.floor((n-1)%(nx*ny)/(nx))*cardDimY+0,cardDimX,cardDimY);
-	let [cx,cy,lx,ly] = [margin+(n-1)%(nx)*cardDimX,margin+Math.floor((n-1)%(nx*ny)/(nx))*cardDimY+0,cardDimX,cardDimY];
-	if(backgroundImage != "") {
-	    docu.addImage(backgroundImage.substring("5", backgroundImage.length-2), cx,cy,lx,ly);
-	    // docu.addImage(document.querySelector('#background-input').files[0].stream(), cx,cy,lx,ly);
-	}
-	// if(otherSideDataUrl != "") {
-	//     docu.addImage(otherSideDataUrl, cx,cy,lx,ly);
-	    // docu.addImage(document.querySelector('#background-input').files[0].stream(), cx,cy,lx,ly);
-	// }
-	if(crossChoice == "intersection"){
-	    printCross(docu,cx,cy);
-	    printCross(docu,cx+lx,cy);
-	    printCross(docu,cx,cy+ly);
-	    printCross(docu,cx+lx,cy+ly);
-	}
-	else if (crossChoice == "box")
-	    docu.rect(cx,cy,lx,ly);
-	json.items.forEach((item,i) => {
-	    if((n >> i) % 2) {
-		// console.log("image", i, "ajoutée");
-	    } else {
-		
-	    }
-	    if(item.src != "" && (n >> i) % 2) {
-		let [x,y] = getCoordOfElem3(item);
-		// console.log("addImage",item.src, margin+(n-1)%(nx)*cardDimX+x*scale, margin+Math.floor((n-1)%(nx*ny)/nx)*cardDimY+y*scale, item.width*scale, item.height*scale);
-		docu.addImage(item["src"], margin+(n-1)%(nx)*cardDimX+x*scale, margin+Math.floor((n-1)%(nx*ny)/nx)*cardDimY+y*scale, item["width"]*scale, item["height"]*scale);
-	    }
- 	});
     }
     if(otherSideDataUrl != "") {
 	docu.addPage();
@@ -238,6 +251,8 @@ let printFromJSON = (json) => {
 	    docu.addImage(otherSideDataUrl, pageDimX-cx-lx,cy,lx,ly);
 	}
     }
-    docu.save("my.pdf");
+    // alert("document created");
+    return docu;
+//    docu.save("my.pdf");
 
 };

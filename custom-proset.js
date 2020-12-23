@@ -298,8 +298,17 @@ document.querySelectorAll("#card-container").forEach((item) =>{
 //     docu.line(x,y-2,x,y+2);  
 // };
 
-let print = () => {
-    printFromJSON(prosetToJSON());
+async function print () {
+    let json = prosetToJSON();
+    setTimeout(() =>{
+	document.querySelector("#window").style.display = "block";
+    },0);
+    document.querySelector("#json-source").value = JSON.stringify(json);
+    let docu = await printFromJSON(json);
+    document.querySelector("#download").style.display="block";
+    document.querySelector("#download").onclick = () => {
+	docu.save("custom-proset.pdf");
+    };
     // printFromXML(prosetToXML());
     return;
     let cardDim = [parseInt(document.querySelector("#card-width").value), parseInt(document.querySelector("#card-height").value)];
@@ -344,7 +353,7 @@ let print = () => {
 	crossChoice = "none";
     else if(document.querySelector("input[value=\"intersection\"]").checked)
 	crossChoice = "intersection";
-    let docu = new jspdf.jsPDF(landscape ? "l" : "p", "mm", pageDim);
+    // let docu = new jspdf.jsPDF(landscape ? "l" : "p", "mm", pageDim);
 	
     docu.setDrawColor(220,220,220);
 
