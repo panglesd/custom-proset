@@ -126,7 +126,9 @@ let printFromXML = (proXML) => {
 };
 
 
-async function printFromJSON (json) {
+async function printFromJSON (json, jspdf2) {
+    if(jspdf2)
+	jspdf = jspdf2;
     let card = json.card;
     let printOptions = json.printOptions;
     let cardDim = [parseInt(card.width), parseInt(card.height)];
@@ -183,7 +185,7 @@ async function printFromJSON (json) {
 
     let otherSideDataUrl = card["other-side-image"];
     
-    let nItem = document.querySelectorAll(".item").length;
+    let nItem = json.items.length;
     let nPerPage = 0;
     let backgroundImage = card["background-image"];
 
@@ -239,7 +241,8 @@ async function printFromJSON (json) {
     
     for(let n=1 ; n<Math.pow(2,nItem) ; n++){
 	// TODO: change loop to function calls to be able to update dom inbetween
-	document.querySelector("#avancement").innerText=n+"/"+(Math.pow(2,nItem)-1);
+	if(typeof document != "undefined")
+	    document.querySelector("#avancement").innerText=n+"/"+(Math.pow(2,nItem)-1);
 	await createCard(n);
 	console.log("étape", n);
 	// docu.rect((n-1)%3*64+0,0,64,89);
@@ -256,3 +259,7 @@ async function printFromJSON (json) {
 //    docu.save("my.pdf");
 
 };
+
+if(!(typeof exports === 'undefined')) {
+    exports.printFromJSON = printFromJSON;
+}
