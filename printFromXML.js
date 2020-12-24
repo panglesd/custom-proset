@@ -125,6 +125,45 @@ let printFromXML = (proXML) => {
 
 };
 
+function createCard(docu, cx, cy, lx, ly, n, json) {
+    let card = json.card;
+    let printOptions = json.printOptions;
+    let cardDim = [parseInt(card.width), parseInt(card.height)];
+    let [cardDimX, cardDimY] = cardDim;
+
+    let scale = card.scale;
+    let crossChoice = printOptions["delimiter"];
+    let backgroundImage = card["background-image"];
+
+    if(backgroundImage != "") {
+	docu.addImage(backgroundImage.substring("5", backgroundImage.length-2), cx,cy,lx,ly);
+	// docu.addImage(document.querySelector('#background-input').files[0].stream(), cx,cy,lx,ly);
+    }
+    // if(otherSideDataUrl != "") {
+    //     docu.addImage(otherSideDataUrl, cx,cy,lx,ly);
+    // docu.addImage(document.querySelector('#background-input').files[0].stream(), cx,cy,lx,ly);
+    // }
+    if(crossChoice == "intersection"){
+	printCross(docu,cx,cy);
+	printCross(docu,cx+lx,cy);
+	printCross(docu,cx,cy+ly);
+	printCross(docu,cx+lx,cy+ly);
+    }
+    else if (crossChoice == "box")
+	docu.rect(cx,cy,lx,ly);
+    json.items.forEach((item,i) => {
+	if((n >> i) % 2) {
+	    // console.log("image", i, "ajoutée");
+	} else {
+	    
+	}
+	if(item.src != "" && (n >> i) % 2) {
+	    let [x,y] = getCoordOfElem3(item);
+	    // console.log("addImage",item.src, margin+(n-1)%(nx)*cardDimX+x*scale, margin+Math.floor((n-1)%(nx*ny)/nx)*cardDimY+y*scale, item.width*scale, item.height*scale);
+	    docu.addImage(item["src"], cx+x*scale, cy+y*scale, item["width"]*scale, item["height"]*scale);
+	}
+    });	
+}
 
 async function printFromJSON (json, jspdf2) {
     if(jspdf2)
@@ -189,7 +228,7 @@ async function printFromJSON (json, jspdf2) {
     let nPerPage = 0;
     let backgroundImage = card["background-image"];
 
-    async function createCard(n) {
+    async function createCardInLoop(n) {
 	return new Promise((resolve) => {
 	    setTimeout(() => {
 		if((n-1)%(nx*ny)==0 && n>1) {
@@ -206,34 +245,7 @@ async function printFromJSON (json, jspdf2) {
 		nPerPage++;
 		// console.log("rect",margin+(n-1)%(nx)*cardDimX,margin+Math.floor((n-1)%(nx*ny)/(nx))*cardDimY+0,cardDimX,cardDimY);
 		let [cx,cy,lx,ly] = [margin+(n-1)%(nx)*cardDimX,margin+Math.floor((n-1)%(nx*ny)/(nx))*cardDimY+0,cardDimX,cardDimY];
-		if(backgroundImage != "") {
-		    docu.addImage(backgroundImage.substring("5", backgroundImage.length-2), cx,cy,lx,ly);
-		    // docu.addImage(document.querySelector('#background-input').files[0].stream(), cx,cy,lx,ly);
-		}
-		// if(otherSideDataUrl != "") {
-		//     docu.addImage(otherSideDataUrl, cx,cy,lx,ly);
-		// docu.addImage(document.querySelector('#background-input').files[0].stream(), cx,cy,lx,ly);
-		// }
-		if(crossChoice == "intersection"){
-		    printCross(docu,cx,cy);
-		    printCross(docu,cx+lx,cy);
-		    printCross(docu,cx,cy+ly);
-		    printCross(docu,cx+lx,cy+ly);
-		}
-		else if (crossChoice == "box")
-		    docu.rect(cx,cy,lx,ly);
-		json.items.forEach((item,i) => {
-		    if((n >> i) % 2) {
-			// console.log("image", i, "ajoutée");
-		    } else {
-			
-		    }
-		    if(item.src != "" && (n >> i) % 2) {
-			let [x,y] = getCoordOfElem3(item);
-			// console.log("addImage",item.src, margin+(n-1)%(nx)*cardDimX+x*scale, margin+Math.floor((n-1)%(nx*ny)/nx)*cardDimY+y*scale, item.width*scale, item.height*scale);
-			docu.addImage(item["src"], margin+(n-1)%(nx)*cardDimX+x*scale, margin+Math.floor((n-1)%(nx*ny)/nx)*cardDimY+y*scale, item["width"]*scale, item["height"]*scale);
-		    }
- 		});	
+		createCard(docu, cx, cy, lx, ly, n, json);
 		resolve();
 	    });
 	});
@@ -243,7 +255,7 @@ async function printFromJSON (json, jspdf2) {
 	// TODO: change loop to function calls to be able to update dom inbetween
 	if(typeof document != "undefined")
 	    document.querySelector("#avancement").innerText=n+"/"+(Math.pow(2,nItem)-1);
-	await createCard(n);
+	await createCardInLoop(n);
 	console.log("étape", n);
 	// docu.rect((n-1)%3*64+0,0,64,89);
     }
