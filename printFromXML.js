@@ -274,4 +274,5 @@ async function printFromJSON (json, jspdf2) {
 
 if(!(typeof exports === 'undefined')) {
     exports.printFromJSON = printFromJSON;
+    exports.createCard = createCard;
 }
