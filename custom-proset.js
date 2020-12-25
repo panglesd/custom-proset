@@ -706,7 +706,7 @@ function load(file) {
 function loadJSON(file) {
     let json = JSON.parse(file);
     let card = json["card"];
-
+    console.log(json);
     // TODO: Load print-options
     document.querySelector("#card-width").value = card["width"];
     document.querySelector("#card-width").dispatchEvent(new Event("change"));
@@ -730,9 +730,12 @@ function loadJSON(file) {
     json.items.forEach((item,i) => {
 	let image = document.querySelectorAll(".card .item")[i];
 	image.onload= () => {
-	    image.style.left = item["left"]+"px";
-	    image.style.top = item["top"]+"px";
-	    image.width = item["width"];
+	    let cardOldWidth = (parseInt(card["width"]))/ card["scale"];
+	    let cardNewWidth = document.querySelector(".card").offsetWidth;
+	    image.style.left = (parseInt(item["left"])*(cardNewWidth/cardOldWidth))+"px";
+	    image.style.top = (parseInt(item["top"])*(cardNewWidth/cardOldWidth))+"px";
+	    // image.style.top = (parseInt(item["top"])*(card.scale*document.querySelector(".card").offsetWidth))+"px";
+	    image.width = (item["width"]*(cardNewWidth/cardOldWidth));
 	};
 	image.src = item["src"];
     });
