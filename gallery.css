@@ -1,0 +1,18 @@
+.proset-list {
+    display:flex;
+    
+}
+
+.proset-game {
+    text-align:center;
+    margin:30px;
+    
+}
+
+.set-name {
+    font-size:1.4em;
+}
+
+.set-author {
+    
+}

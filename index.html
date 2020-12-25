@@ -100,6 +100,18 @@
 	<script src="printFromXML.js"></script>
 	<script src="custom-proset.js"></script>
 	<script src="https://unpkg.com/jspdf@latest/dist/jspdf.umd.js"></script>
+	<script>
+	 let id = window.location.search.substring(4);
+	 if(id != "") {
+	     let oReq = new XMLHttpRequest();
+	     oReq.onload = () => {
+		 loadJSON(oReq.responseText);
+	     };
+	     
+	     oReq.open("get", id+".json", true);
+	     oReq.send();
+	 }
+	</script>
 	<a class="gh-mark" href="https://github.com/panglesd/custom-proset"><img alt="" src="GitHub-Mark-32px.png"/></a>
 	<div id="svg-container" style="display:none">
 	    <svg

@@ -1,8 +1,7 @@
 <?php
-echo "test";
 $servername = "localhost";
 $username = "customproset";
-$password = "yourpasshere";
+$password = "F81g8h5kdO4FNduo";
 $dbname = "custom_proset";
 
 // Create connection
@@ -19,7 +18,7 @@ if(isset($_POST["new_entry"])) {
     $comment=htmlspecialchars($_POST["comment"]);
     $stmt->bind_param("sss", $author, $name, $comment);
     $stmt->execute();
-    printf("%d ligne insérée.\n", $stmt->affected_rows);
+    /* printf("%d ligne insérée.\n", $stmt->affected_rows); */
     $last_id = $conn->insert_id;
 
 
@@ -31,9 +30,10 @@ if(isset($_POST["new_entry"])) {
     // Todo: compile "$last_id.json" to "$last_id.pdf"
     shell_exec("node compile.js $last_id.json $last_id.pdf");
 
+    shell_exec("convert thumbnail_$last_id.pdf $last_id.png");
 
-    echo "last id inserted";
-    echo $last_id;
+    /* echo "last id inserted"; */
+    /* echo $last_id; */
     /* Fermeture du traitement */
     $stmt->close();
 }
@@ -47,7 +47,7 @@ if(isset($_POST["new_entry"])) {
 $sql = "SELECT * FROM gallery";
 
 $result = $conn->query($sql);
-    
+
 
 ?>
 
@@ -57,19 +57,28 @@ $result = $conn->query($sql);
     <head>
 	<title></title>
 	<meta charset="utf-8" />
+	<link href="gallery.css" rel="stylesheet"/>
     </head>
     <body>
-	<?php
-	if($result) {
-	    while ($row = $result->fetch_assoc()) {
-		echo '<div class="proset-game">';
-		echo "Set named $row[name] from $row[author]. Download <a href=$row[id].pdf>here</a> ";
-		/* printf ("%s (%s)\n", $row['author'], $row['name']);*/
-		echo '</div>';
-	     }
-	    $result->close();
-	}
-	$conn->close();
-	?>
+	<h1>Gallery of user created proset games</h1>
+	<!-- <div>To submit your own proset, click <a href="index.html">here</a>.</div> -->
+	<div class="proset-list">
+	    <?php
+	    if($result) {
+		while ($row = $result->fetch_assoc()) {
+		    echo '<div class="proset-game">';
+		    echo "<a href=\"$row[id].pdf\">";
+		    echo "<img src=\"$row[id].png\"/></a>";
+		    echo "<div class=\"set-name\">$row[name]</div>";
+		    echo "<div class=\"set-author\">$row[author]</div>";
+		    echo "<div class=\"set-author\"><a href=\"index.html?id=$row[id]\">Open in editor</div>";
+		    /* printf ("%s (%s)\n", $row['author'], $row['name']);*/
+		    echo '</div>';
+		}
+		$result->close();
+	    }
+	    $conn->close();
+	    ?>
+	</div>
     </body>
 </html>
