@@ -1,7 +1,7 @@
 <?php
 $servername = "localhost";
 $username = "customproset";
-$password = "g1tEnuh91w5cTzXv";
+$password = "F81g8h5kdO4FNduo";
 $dbname = "custom_proset";
 
 // Create connection
@@ -69,7 +69,7 @@ $result = $conn->query($sql);
 		    echo '<div class="proset-game">';
 		    echo "<a href=\"$row[id].pdf\">";
 		    echo "<img src=\"$row[id].png\"/></a>";
-		    echo "<div class=\"set-name\">$row[name]</div>"
+		    echo "<div class=\"set-name\">$row[name]</div>";
 		    echo "<div class=\"set-author\">$row[author]</div>";
 		    echo "<div class=\"set-author\"><a href=\"index.html?id=$row[id]\">Open in editor</div>";
 		    /* printf ("%s (%s)\n", $row['author'], $row['name']);*/
