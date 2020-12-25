@@ -18,7 +18,7 @@ if(isset($_POST["new_entry"])) {
     $comment=htmlspecialchars($_POST["comment"]);
     $stmt->bind_param("sss", $author, $name, $comment);
     $stmt->execute();
-    printf("%d ligne insérée.\n", $stmt->affected_rows);
+    /* printf("%d ligne insérée.\n", $stmt->affected_rows); */
     $last_id = $conn->insert_id;
 
 
@@ -32,8 +32,8 @@ if(isset($_POST["new_entry"])) {
 
     shell_exec("convert thumbnail_$last_id.pdf $last_id.png");
 
-    echo "last id inserted";
-    echo $last_id;
+    /* echo "last id inserted"; */
+    /* echo $last_id; */
     /* Fermeture du traitement */
     $stmt->close();
 }
