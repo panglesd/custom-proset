@@ -69,12 +69,16 @@ let defaultItem = function(i) {
 
     svg.querySelector("circle").style.fill = color;
     var svg64 = btoa(new XMLSerializer().serializeToString(svg));
-    var image64 = 'data:image/svg+xml;base64,' + svg64;
-    let image = (typeof(i) == "number") ? document.querySelector("#img-item-"+i) : i;
-    image.onload= () => {
-	placeItem(image,i);
-    };
-    image.src = image64;
+    var svg65 = new XMLSerializer().serializeToString(svg);
+    svgToBase64Png(new XMLSerializer().serializeToString(svg),100).then((image65) => {
+	// var image64 = 'data:image/svg+xml;base64,' + svg64;
+	let image = (typeof(i) == "number") ? document.querySelector("#img-item-"+i) : i;
+	image.onload= () => {
+	    placeItem(image,i);
+	};
+	image.src = image65;
+	
+    });
 };
 let updateItem = function(i) {
     console.log("updateItem called");
