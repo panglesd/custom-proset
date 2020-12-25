@@ -31,7 +31,7 @@
 	    </div>	<!-- User Interface for choosing parameters and items -->
 	    <div class="ui">
 		<h2>Proset Card Generator</h2>
-		For an introduction to the game, <a href="https://en.wikipedia.org/wiki/Projective_Set_(game)">here</a>. To play the game, <a href="https://www.ocf.berkeley.edu/~dadams/proset/">here</a>.
+		For an introduction to the game, <a href="https://en.wikipedia.org/wiki/Projective_Set_(game)">here</a>. To play the game, <a href="https://www.ocf.berkeley.edu/~dadams/proset/">here</a>. You can also look at the cards created by others in the <a href="gallery.php">gallery</a>.
 		<h3>Menu</h3>
 		Save: <input class="input" type="button" id="save-input" value="Save"><br/>
 		Load: <input class="file-input" type="file" id="load-input" name="load-input" value="Load">
@@ -84,10 +84,12 @@
 	    </div>
 	</div>
 	<div id="window" style="display:none">
+	    <h3> Creation of your file</h3>
 	    Your file is being created.
 
 	    Processing card: <span id="avancement"></span><br/> <input style="display:none;" id="download" name="" type="button" value="Download PDF"/><br/><br/>
 
+	    <h3>Submitting your file to the gallery</h3>
 	    If you wish to add your creation to the gallery, fill the following form and click on "Submit to the gallery".
 	    <form method="post" target="_blank" action="gallery.php">
 		Name of the cards <input name="name" type="text" value=""/><br/>
