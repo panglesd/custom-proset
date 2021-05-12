@@ -559,50 +559,6 @@ function svgToBase64Png (originalSvg, width) {
     });
 }
 
-function prosetToXML () {
-    let saveXMLDoc = document.implementation.createDocument(null, "custom-proset");
-
-    let root = saveXMLDoc.firstChild;
-
-    let printOptions = saveXMLDoc.createElement("print-options");
-    printOptions.setAttribute("format", document.querySelector("#print-format [selected]").value);
-    printOptions.setAttribute("custom-width", document.querySelector("#customX").value);
-    printOptions.setAttribute("custom-height", document.querySelector("#customY").value);
-    printOptions.setAttribute("margin", document.querySelector("#print-margin").value);
-    printOptions.setAttribute("orientation", document.querySelector('[name="portrait"]:checked').value);
-    printOptions.setAttribute("delimiter", document.querySelector('[name="delimiter"]:checked').value);
-
-    root.appendChild(printOptions);
-
-    let card = saveXMLDoc.createElement("card");
-    card.setAttribute("width", document.querySelector("#card-width").value);
-    card.setAttribute("height", document.querySelector("#card-height").value);
-    card.setAttribute("line-number", document.querySelector("#card-line-number").value);
-    card.setAttribute("column-number", document.querySelector("#card-column-number").value);
-    card.setAttribute("ratio-number", document.querySelector("#ratio-number").value);
-    card.setAttribute("background-image", document.querySelector(".card").style.backgroundImage);
-    card.setAttribute("other-side-image", otherSideDataUrl);
-
-    let cardWidth = document.querySelector(".card").offsetWidth;
-    card.setAttribute( "scale", (parseInt(card.getAttribute("width")))/cardWidth);
-
-    root.appendChild(card);
-
-    let items = saveXMLDoc.createElement("items");
-    document.querySelectorAll(".item").forEach((item) => {
-	let itemXML = saveXMLDoc.createElement("item");
-	itemXML.setAttribute("width", item.width);
-	itemXML.setAttribute("height", item.height);
-	itemXML.setAttribute("left", item.offsetLeft);
-	itemXML.setAttribute("top", item.offsetTop);
-	itemXML.setAttribute("src", item.src);
-	items.appendChild(itemXML);
-    });
-    root.appendChild(items);
-    return saveXMLDoc;
-    // return (new XMLSerializer().serializeToString(saveXMLDoc));
-    
-}
 function prosetToJSON () {
     let json = {};
 
