@@ -5,7 +5,7 @@ let readFile = (file) => {
 	    reader.addEventListener("load", () => {
 		// alert("here");
 		console.log(reader.result);
-		svgToBase64Png(reader.result, 50).then((data) => {
+		svgToBase64Png(reader.result, 100).then((data) => {
 		    resolve(data);
 		});
 	    });
@@ -119,7 +119,7 @@ for(let i=0; i<6;i++) {
 }
 
 let updateBackground = function() {
-    let reader  = new FileReader();
+    let reader = new FileReader();
     let file = document.querySelector('#background-input').files[0];
     // alert(file ?  file.type:"");
     if(file && file.type != "image/png" && file.type != "image/jpeg" && file.type != "image/svg+xml") {
@@ -130,14 +130,16 @@ let updateBackground = function() {
     if(file && file.type == "image/svg+xml") {
 	readFile(file).then((data) => {
 	    // alert(data);
-	    document.querySelector(".card").style.backgroundImage = "url("+ data +")";	    
+	    // document.querySelector(".card").style.backgroundImage = "url("+ data +")";
+	    document.querySelector("#card-background").src = data;	    
 	});
 	return;
     }
     // let image = document.querySelector("#card-background");
     reader.addEventListener("load", function () {
 	// image.src = reader.result;
-	document.querySelector(".card").style.backgroundImage = "url("+ reader.result +")";
+	    document.querySelector("#card-background").src = reader.result;	    
+	// document.querySelector(".card").style.backgroundImage = "url("+ reader.result +")";
     });
     if(file) {
 	reader.readAsDataURL(file);
@@ -189,7 +191,7 @@ scaleTool.mouseUp = (ev) => {
     scaleTool.originalWidth = undefined;
 };
 scaleTool.mouseDown = (ev) => {
-    if(ev.target.classList.contains("item")){
+    if(ev.target.classList.contains("item") || ev.target.classList.contains("background-img")){
 	ev.preventDefault();
 	scaleTool.originClick = [ev.pageX, ev.pageY];
 	scaleTool.originalWidth = ev.target.width;
@@ -221,7 +223,7 @@ moveTool.mouseUp = (ev) => {
     moveTool.originPosition = undefined;
 };
 moveTool.mouseDown = (ev) => {
-    if(ev.target.classList.contains("item")){
+    if(ev.target.classList.contains("item") || ev.target.classList.contains("background-img")){
 	ev.preventDefault();
 	console.log("mousedown");
 	moveTool.originClick = [ev.pageX, ev.pageY];
@@ -475,7 +477,18 @@ function prosetToJSON () {
     card["line-number"] = document.querySelector("#card-line-number").value;
     card["column-number"] = document.querySelector("#card-column-number").value;
     card["ratio-number"] = document.querySelector("#ratio-number").value;
-    card["background-image"] = document.querySelector(".card").style.backgroundImage;
+
+    let bIElem = document.querySelector("#card-background");
+    let bImage = {};
+    bImage["width"] = bIElem.width;
+    bImage["height"] = bIElem.height;
+    bImage["left"] = bIElem.offsetLeft;
+    bImage["top"] = bIElem.offsetTop;
+    bImage["src"] = bIElem.src;
+
+    card["background-image"] = bImage;
+
+    // card["background-image"] = document.querySelector(".card").style.backgroundImage;
     card["other-side-image"] = otherSideDataUrl;
 
     let cardWidth = document.querySelector(".card").offsetWidth;

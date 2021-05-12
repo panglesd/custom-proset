@@ -68,7 +68,7 @@ input[type="number"] {
     color:#e9c46a;
 }
 
-.item {
+.item, .background-img {
     position: absolute;
     top:0px;
     left:0px;

@@ -17,10 +17,12 @@ function createCard(docu, cx, cy, lx, ly, n, json) {
 
     let scale = card.scale;
     let crossChoice = printOptions["delimiter"];
-    let backgroundImage = card["background-image"];
+    let backgroundImageInfo = card["background-image"];
 
-    if(backgroundImage != "") {
-	docu.addImage(backgroundImage.substring("5", backgroundImage.length-2), cx,cy,lx,ly);
+    if(backgroundImageInfo["src"] != "") {
+	let [x,y] = getCoordOfElem3(backgroundImageInfo);
+	docu.addImage(backgroundImageInfo["src"], cx+x*scale, cy+y*scale, backgroundImageInfo["width"]*scale, backgroundImageInfo["height"]*scale);
+	// docu.addImage(backgroundImage.substring("5", backgroundImage.length-2), cx,cy,lx,ly);
 	// docu.addImage(document.querySelector('#background-input').files[0].stream(), cx,cy,lx,ly);
     }
     // if(otherSideDataUrl != "") {
