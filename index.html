@@ -31,7 +31,8 @@
 	    </div>	<!-- User Interface for choosing parameters and items -->
 	    <div class="ui">
 		<h2>Proset Card Generator</h2>
-		For an introduction to the game, <a href="https://en.wikipedia.org/wiki/Projective_Set_(game)">here</a>. To play the game, <a href="https://www.ocf.berkeley.edu/~dadams/proset/">here</a>. You can also look at the cards created by others in the <a href="gallery.php">gallery</a>.
+		<!-- For an introduction to the game, <a href="https://en.wikipedia.org/wiki/Projective_Set_(game)">here</a>. To play the game, <a href="https://www.ocf.berkeley.edu/~dadams/proset/">here</a>. You can also look at the cards created by others in the <a href="gallery.php">gallery</a>. -->
+		Show the <a href="#" onclick="showIntro()">introduction</a> again.
 		<h3>Menu</h3>
 		Save: <input class="input" type="button" id="save-input" value="Save"><br/>
 		Load: <input class="file-input" type="file" id="load-input" name="load-input" value="Load">
@@ -44,7 +45,7 @@
 		    <li>Other side image: <input class="file-input" type="file" id="other-side-input"></li>
 		</ul>
 		<h3>Items</h3>
-		Number of items : <input name="" type="number" value="6" id="n-item"/>.<br/> To find images, <a href="svgrepo.com">svgrepo</a> might be a good starting point.
+		Number of items : <input name="" type="number" value="6" id="n-item"/>.<!-- <br/> To find images, <a href="svgrepo.com">svgrepo</a> might be a good starting point. -->
 		<ul id="list-inputs">
 		    <li>
 			Item 0: <input class="file-input" type="file" id="file0"><input name="" type="button" id="default-0" value="Default"/>
@@ -84,6 +85,7 @@
 	    </div>
 	</div>
 	<div id="window" style="display:none">
+	    <div class="close-window" onclick="hideWindows()">X</div>
 	    <h3> Creation of your file</h3>
 	    Your file is being created.
 
@@ -98,6 +100,31 @@
 		<input name="source" id="json-source" type="hidden" value=""/><br/>
 		<input name="new_entry" value="Submit to the gallery" type="submit"/>
 	    </form>
+	</div>
+	<div id="window2" style="">
+	    <h2>Welcome to the creation tool for the proset card game.</h2>
+	    <style>
+	     em {
+		 font-weight: bold;
+		 color: #2a9d8f;
+		 font-style: normal;
+		 font-size: 1.2em;
+	     }
+	     #window2 {}
+	    </style>
+	    <p>If you don't know what the proset game is, you can find <em>the rules</em> <a href="https://en.wikipedia.org/wiki/Projective_Set_(game)">here</a> or <a href="https://stacky.net/wiki/index.php?title=Projective_Set">there</a>, <em>play the game</em> <a href="https://www.ocf.berkeley.edu/~dadams/proset/">here</a>. There even is a mathematical <a href="http://homepages.warwick.ac.uk/staff/D.Maclagan/papers/set.pdf">paper</a> about it.</p>
+
+	    <p>Using this tool, you will be able to <em>generate your own customized set of cards</em>, in the form of a <em>pdf</em> containing the set, that you can then <em>print, cut, and play</em>. Examples of such cards can be found (and modified) in the <a href="gallery.php">gallery</a></p>
+
+	    <p>To <em>create the cards</em>, you need to choose the difficulty of the set (the number of items, if you already know the rules). Then, you need to give the system <em>an image for each of the items</em>, and arrange them in the big white rectangle, which is a preview of the card. There are <em>many options</em> you can choose, such as the size of the cards, of the paper on which you will print it, the background and the back of the cards, the delimitation of the cards to cut them more easily...</p>
+
+	    <p>There are several ways to choose the image for the items. One is to pick some svg that you like from <a href="https://www.svgrepo.com/">svgrepo</a> or <a href="https://www.flaticon.com/">Flaticon</a>. Another is to use portraits that you extract from photos you've taken, using an image editor. <em>Be creative</em>, take inspiration from the gallery, and don't forget to <em>submit your set of cards</em> there!</p>
+
+	    <p>Once you are ready, <input type="button" value="close" onclick="hideWindows()"> this window and start your proset!</p>
+
+	    <p>Have fun!</p>
+	    <p>Paul-Elliot</p>
+
 	</div>
 	<script src="printFromXML.js"></script>
 	<script src="custom-proset.js"></script>

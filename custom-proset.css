@@ -1,13 +1,15 @@
-#window {
+#window, #window2 {
     position: fixed;
-    top:20%;
-    left:20%;
-    right:20%;
-    bottom:20%;
+    top:10%;
+    left:10%;
+    right:10%;
+    /* bottom:10%; */
     background-color:#e9c46a;
     border: 3px solid #264653;
     border-radius: 15px;
-    padding:30px;
+    padding:60px;
+    padding-left:120px;
+    padding-right:120px;
 }
 
 .card {

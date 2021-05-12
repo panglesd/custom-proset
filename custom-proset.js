@@ -758,3 +758,11 @@ let loadCaller = () => {
 
 document.querySelector("#save-input").addEventListener("click", save);
 document.querySelector("#load-input").addEventListener("change", loadCaller);
+
+function hideWindows() {
+    document.querySelector("#window").style.display="none";   
+    document.querySelector("#window2").style.display="none";   
+}
+function showIntro() {
+    document.querySelector("#window2").style.display="block";   
+}
