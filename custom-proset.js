@@ -146,7 +146,6 @@ let updateBackground = function() {
     }
 };
 
-let otherSideDataUrl = "";
 let saveOtherSide = function() {
     let reader  = new FileReader();
     let file = document.querySelector('#other-side-input').files[0];
@@ -156,7 +155,8 @@ let saveOtherSide = function() {
 	return;
     }
     reader.addEventListener("load", function () {
-	otherSideDataUrl = reader.result;
+	// otherSideDataUrl = reader.result;
+	document.querySelector("#card-verso").src = reader.result;
     });
     if(file) {
 	reader.readAsDataURL(file);
@@ -191,7 +191,7 @@ scaleTool.mouseUp = (ev) => {
     scaleTool.originalWidth = undefined;
 };
 scaleTool.mouseDown = (ev) => {
-    if(ev.target.classList.contains("item") || ev.target.classList.contains("background-img")){
+    if(ev.target.classList.contains("item") || ev.target.classList.contains("background-img") || ev.target.classList.contains("verso-img")){
 	ev.preventDefault();
 	scaleTool.originClick = [ev.pageX, ev.pageY];
 	scaleTool.originalWidth = ev.target.width;
@@ -223,7 +223,7 @@ moveTool.mouseUp = (ev) => {
     moveTool.originPosition = undefined;
 };
 moveTool.mouseDown = (ev) => {
-    if(ev.target.classList.contains("item") || ev.target.classList.contains("background-img")){
+    if(ev.target.classList.contains("item") || ev.target.classList.contains("background-img") || ev.target.classList.contains("verso-img")){
 	ev.preventDefault();
 	console.log("mousedown");
 	moveTool.originClick = [ev.pageX, ev.pageY];
@@ -489,7 +489,16 @@ function prosetToJSON () {
     card["background-image"] = bImage;
 
     // card["background-image"] = document.querySelector(".card").style.backgroundImage;
-    card["other-side-image"] = otherSideDataUrl;
+    // card["other-side-image"] = otherSideDataUrl;
+    let versoElem = document.querySelector("#card-verso");
+    let versoImage = {};
+    versoImage["width"] = versoElem.width;
+    versoImage["height"] = versoElem.height;
+    versoImage["left"] = versoElem.offsetLeft;
+    versoImage["top"] = versoElem.offsetTop;
+    versoImage["src"] = versoElem.src;
+    card["other-side-image"] = versoImage;
+
 
     let cardWidth = document.querySelector(".card").offsetWidth;
     card["scale"] = (parseInt(card["width"]))/cardWidth;
@@ -561,21 +570,61 @@ function loadJSON(file) {
     let bImage = card["background-image"];
     let bIElem = document.querySelector("#card-background");
     if(typeof(bImage) == "string") {
-	bIElem.width = card["width"];
-	// bIElem.height = card["height"];
-	bIElem.offsetLeft = 0;
-	bIElem.offsetTop = 0;
-	bIElem.src = bImage;	
+	let image = bIElem;
+	let item = bImage;
+	image.src = item["src"];
     }
     else if (bImage ){
-	bIElem.width = bImage["width"];
-	// bIElem.height = bImage["height"];
-	bIElem.offsetLeft = bImage["left"];
-	bIElem.offsetTop = bImage["top"];
-	bIElem.src = bImage["src"];
+	let image = bIElem;
+	let item = bImage;
+	image.onload= () => {
+	    let cardOldWidth = (parseInt(card["width"]))/ card["scale"];
+	    let cardNewWidth = document.querySelector(".card").offsetWidth;
+	    image.style.left = (parseInt(item["left"])*(cardNewWidth/cardOldWidth))+"px";
+	    image.style.top = (parseInt(item["top"])*(cardNewWidth/cardOldWidth))+"px";
+	    // image.style.top = (parseInt(item["top"])*(card.scale*document.querySelector(".card").offsetWidth))+"px";
+	    image.width = (item["width"]*(cardNewWidth/cardOldWidth));
+	};
+	image.src = item["src"];
+	// console.log("bImage",bImage,bIElem);
+	// bIElem.style.width = bImage["width"]+"px";
+	// // bIElem.height = bImage["height"];
+	// bIElem.style.left = bImage["left"]+"px";
+	// bIElem.style.top = bImage["top"]+"px";
+	// bIElem.src = bImage["src"];
     }
 
-    otherSideDataUrl = card["other-side-image"];
+    // otherSideDataUrl = card["other-side-image"];
+    let versoImage = card["other-side-image"];
+    let versoElem = document.querySelector("#card-verso");
+    if(typeof(versoImage) == "string") {
+	let image = versoElem;
+	let item = versoImage;
+	image.src = item["src"];
+	// versoElem.style.width = card["width"];
+	// // versoElem.height = card["height"];
+	// versoElem.style.left = 0;
+	// versoElem.style.top = 0;
+	// versoElem.src = versoImage;	
+    }
+    else if (versoImage ){
+	let image = versoElem;
+	let item = versoImage;
+	image.onload= () => {
+	    let cardOldWidth = (parseInt(card["width"]))/ card["scale"];
+	    let cardNewWidth = document.querySelector(".card").offsetWidth;
+	    image.style.left = (parseInt(item["left"])*(cardNewWidth/cardOldWidth))+"px";
+	    image.style.top = (parseInt(item["top"])*(cardNewWidth/cardOldWidth))+"px";
+	    // image.style.top = (parseInt(item["top"])*(card.scale*document.querySelector(".card").offsetWidth))+"px";
+	    image.width = (item["width"]*(cardNewWidth/cardOldWidth));
+	};
+	image.src = item["src"];
+	// versoElem.style.width = versoImage["width"];
+	// // versoElem.height = versoImage["height"];
+	// versoElem.style.left = versoImage["left"];
+	// versoElem.style.top = versoImage["top"];
+	// versoElem.src = versoImage["src"];
+    }
 
     json.items.forEach((item,i) => {
 	let image = document.querySelectorAll(".card .item")[i];
@@ -612,3 +661,13 @@ function hideWindows() {
 function showIntro() {
     document.querySelector("#window2").style.display="block";   
 }
+function showOtherSide() {
+    let card = document.querySelector(".card");
+    card.classList.toggle("recto");
+    card.classList.toggle("verso");
+    let buttonPanel = document.querySelector(".editing-tools");
+    buttonPanel.classList.toggle("recto");
+    buttonPanel.classList.toggle("verso");
+}
+document.querySelector("#other-side-button").onclick = showOtherSide;
+document.querySelector("#other-side-button2").onclick = showOtherSide;

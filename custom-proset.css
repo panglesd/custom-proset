@@ -23,6 +23,19 @@
     background-size: 100% 100%;
 }
 
+.card.recto #card-verso {
+    visibility: hidden;
+}
+.card.verso *:not(#card-verso) {
+    visibility: hidden;
+}
+.editing-tools.recto #other-side-button2 {
+    display: none;
+}
+.editing-tools.verso #other-side-button {
+    display: none;
+}
+
 .gh-mark {
     position: fixed;
     left:0;
@@ -68,7 +81,7 @@ input[type="number"] {
     color:#e9c46a;
 }
 
-.item, .background-img {
+.item, .verso-img, .background-img {
     position: absolute;
     top:0px;
     left:0px;

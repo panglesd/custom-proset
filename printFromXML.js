@@ -9,6 +9,24 @@ let printCross = (docu, x,y) => {
     docu.line(x,y-2,x,y+2);  
 };
 
+function createCardVerso(docu, cx, cy, lx, ly, json) {
+    let card = json.card;
+    let printOptions = json.printOptions;
+    let cardDim = [parseInt(card.width), parseInt(card.height)];
+    let [cardDimX, cardDimY] = cardDim;
+
+    let scale = card.scale;
+    let crossChoice = printOptions["delimiter"];
+    let versoImageInfo = card["other-side-image"];
+
+    if(versoImageInfo["src"] != "") {
+	let [x,y] = getCoordOfElem3(versoImageInfo);
+	docu.addImage(versoImageInfo["src"], cx+x*scale, cy+y*scale, versoImageInfo["width"]*scale, versoImageInfo["height"]*scale);
+	// docu.addImage(backgroundImage.substring("5", backgroundImage.length-2), cx,cy,lx,ly);
+	// docu.addImage(document.querySelector('#background-input').files[0].stream(), cx,cy,lx,ly);
+    }
+
+}
 function createCard(docu, cx, cy, lx, ly, n, json) {
     let card = json.card;
     let printOptions = json.printOptions;
@@ -109,6 +127,7 @@ async function printFromJSON (json, jspdf2) {
     docu.setDrawColor(220,220,220);
 
     let otherSideDataUrl = card["other-side-image"];
+    let otherSide = card["other-side-image"];
     
     let nItem = json.items.length;
     let nPerPage = 0;
@@ -122,7 +141,8 @@ async function printFromJSON (json, jspdf2) {
 		    if(otherSideDataUrl != "") {
 			for(let n2=1; n2<=nPerPage; n2++) {
 			    let [cx,cy,lx,ly] = [margin+(n2-1)%(nx)*cardDimX,margin+Math.floor((n2-1)%(nx*ny)/(nx))*cardDimY+0,cardDimX,cardDimY];
-			    docu.addImage(otherSideDataUrl, pageDimX-cx-lx,cy,lx,ly);
+			    createCardVerso(docu,cx,cy,lx,ly, json);
+			    // docu.addImage(otherSideDataUrl, pageDimX-cx-lx,cy,lx,ly, "backgroundimage", "backgroundimage");
 			}
 			docu.addPage();
 			nPerPage=0;
@@ -149,7 +169,8 @@ async function printFromJSON (json, jspdf2) {
 	docu.addPage();
 	for(let n2=1; n2<=nPerPage; n2++) {
 	    let [cx,cy,lx,ly] = [margin+(n2-1)%(nx)*cardDimX,margin+Math.floor((n2-1)%(nx*ny)/(nx))*cardDimY+0,cardDimX,cardDimY];
-	    docu.addImage(otherSideDataUrl, pageDimX-cx-lx,cy,lx,ly);
+	    createCardVerso(docu,cx,cy,lx,ly, json);
+	    // docu.addImage(otherSideDataUrl, pageDimX-cx-lx,cy,lx,ly, "backgroundimage", "backgroundimage");
 	}
     }
     // alert("document created");
