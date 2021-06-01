@@ -593,7 +593,23 @@ function loadJSON(file) {
     document.querySelector("#ratio-number").value = card["ratio-number"];
     document.querySelector("#ratio-number").dispatchEvent(new Event("change"));
 
-    document.querySelector(".card").style.backgroundImage = card["background-image"];
+    // document.querySelector(".card").style.backgroundImage = card["background-image"];
+    let bImage = card["background-image"];
+    let bIElem = document.querySelector("#card-background");
+    if(typeof(bImage) == "string") {
+	bIElem.width = card["width"];
+	bIElem.height = card["height"];
+	bIElem.offsetLeft = 0;
+	bIElem.offsetTop = 0;
+	bIElem.src = bImage;	
+    }
+    else {
+	bIElem.width = bImage["width"];
+	bIElem.height = bImage["height"];
+	bIElem.offsetLeft = bImage["left"];
+	bIElem.offsetTop = bImage["top"];
+	bIElem.src = bImage["src"];
+    }
 
     otherSideDataUrl = card["other-side-image"];
 
