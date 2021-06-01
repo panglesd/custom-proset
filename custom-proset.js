@@ -598,14 +598,14 @@ function loadJSON(file) {
     let bIElem = document.querySelector("#card-background");
     if(typeof(bImage) == "string") {
 	bIElem.width = card["width"];
-	bIElem.height = card["height"];
+	// bIElem.height = card["height"];
 	bIElem.offsetLeft = 0;
 	bIElem.offsetTop = 0;
 	bIElem.src = bImage;	
     }
-    else {
+    else if (bImage ){
 	bIElem.width = bImage["width"];
-	bIElem.height = bImage["height"];
+	// bIElem.height = bImage["height"];
 	bIElem.offsetLeft = bImage["left"];
 	bIElem.offsetTop = bImage["top"];
 	bIElem.src = bImage["src"];
