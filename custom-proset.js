@@ -537,42 +537,6 @@ function save() {
     document.body.removeChild(element);
 }
 
-function load(file) {
-    let parser = new DOMParser();
-    let xmlDoc = parser.parseFromString(file,"text/xml");
-    let card = xmlDoc.querySelector("card");
-
-    // TODO: Load print-options
-    document.querySelector("#card-width").value = card.getAttribute("width");
-    document.querySelector("#card-width").dispatchEvent(new Event("change"));
-
-    document.querySelector("#card-height").value = card.getAttribute("height");
-    document.querySelector("#card-height").dispatchEvent(new Event("change"));
-
-    document.querySelector("#card-column-number").value = card.getAttribute("column-number");
-    document.querySelector("#card-column-number").dispatchEvent(new Event("change"));
-
-    document.querySelector("#card-line-number").value = card.getAttribute("line-number");
-    document.querySelector("#card-line-number").dispatchEvent(new Event("change"));
-
-    document.querySelector("#ratio-number").value = card.getAttribute("ratio-number");
-    document.querySelector("#ratio-number").dispatchEvent(new Event("change"));
-
-    document.querySelector(".card").style.backgroundImage = card.getAttribute("background-image");
-
-    otherSideDataUrl = card.getAttribute("other-side-image");
-
-    xmlDoc.querySelectorAll("items item").forEach((item,i) => {
-	let image = document.querySelectorAll(".card .item")[i];
-	image.onload= () => {
-	    image.style.left = item.getAttribute("left")+"px";
-	    image.style.top = item.getAttribute("top")+"px";
-	    image.width = item.getAttribute("width");
-	};
-	image.src = item.getAttribute("src");
-    });
-
-}
 function loadJSON(file) {
     let json = JSON.parse(file);
     let card = json["card"];
