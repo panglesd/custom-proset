@@ -1,0 +1,24 @@
+{
+  "name": "custom-proset",
+  "version": "0.0.1",
+  "description": "A custom proset card game generator",
+  "main": "custom-proset.js",
+  "dependencies": {
+    "canvas": "^2.6.1",
+    "intro.js": "^3.4.0",
+    "jspdf": "^2.1.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/panglesd/custom-proset.git"
+  },
+  "author": "Paul-Elliot Anglès d'Auriac",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/panglesd/custom-proset/issues"
+  },
+  "homepage": "https://github.com/panglesd/custom-proset#readme"
+}
