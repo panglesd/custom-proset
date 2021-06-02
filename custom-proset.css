@@ -116,7 +116,7 @@ input[type="number"] {
 .editing-tools {
     padding: 20px;    
 }
-.editing-tools > * {
+.editing-tools > div > * {
     padding: 5px;    
 }
 
@@ -128,4 +128,9 @@ input[type="number"] {
 
 h3 {
     color:#264653;
+}
+
+
+.introjs-tooltip {
+    min-width: 550px;
 }
