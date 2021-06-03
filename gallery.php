@@ -1,8 +1,6 @@
 <?php
-$servername = "localhost";
-$username = "customproset";
-$password = "F81g8h5kdO4FNduo";
-$dbname = "custom_proset";
+
+include "credentials.php";
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
