@@ -24,12 +24,14 @@ if(isset($_POST["new_entry"])) {
     // print_r ($_POST);
 
     // Todo: Write file "$last_id.json"
-    file_put_contents("$last_id.json", $_POST["source"]);
+    file_put_contents("db_file/$last_id.json", $_POST["source"]);
 
     // Todo: compile "$last_id.json" to "$last_id.pdf"
-    shell_exec("node compile.js $last_id.json $last_id.pdf");
+    shell_exec("node compile.js db_file/$last_id.json $last_id.pdf");
+    shell_exec("mv $last_id.pdf db_file/$last_id.pdf");
+    shell_exec("mv thumbnail_$last_id.pdf db_file/thumbnail_$last_id.pdf");
 
-    shell_exec("convert thumbnail_$last_id.pdf $last_id.png");
+    shell_exec("convert db_file/thumbnail_$last_id.pdf db_file/$last_id.png");
 
     /* echo "last id inserted"; */
     /* echo $last_id; */
@@ -87,8 +89,8 @@ $result = $conn->query($sql);
 	    if($result) {
 		while ($row = $result->fetch_assoc()) {
 		    echo '<div class="proset-game">';
-		    echo "<a href=\"$row[id].pdf\">";
-		    echo "<img src=\"$row[id].png\"/></a>";
+		    echo "<a href=\"db_file/$row[id].pdf\">";
+		    echo "<img src=\"db_file/$row[id].png\"/></a>";
 		    echo "</a>";
 		    echo "<div class=\"set-name\">$row[name]</div>";
 		    echo "<div class=\"set-author\">By: $row[author]</div>";
