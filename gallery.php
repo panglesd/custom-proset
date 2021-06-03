@@ -9,12 +9,13 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 if(isset($_POST["new_entry"])) {
-    $sql = "INSERT INTO gallery(author, name, comment) VALUES (?, ?, ?)";
+    $sql = "INSERT INTO gallery(author, name, comment, password) VALUES (?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
     $author=htmlspecialchars($_POST["author"]);
     $name=htmlspecialchars($_POST["name"]);
     $comment=htmlspecialchars($_POST["comment"]);
-    $stmt->bind_param("sss", $author, $name, $comment);
+    $passwd=password_hash($_POST["passwd"], PASSWORD_DEFAULT);
+    $stmt->bind_param("ssss", $author, $name, $comment, $passwd);
     $stmt->execute();
     /* printf("%d ligne insérée.\n", $stmt->affected_rows); */
     $last_id = $conn->insert_id;
@@ -34,6 +35,27 @@ if(isset($_POST["new_entry"])) {
     /* echo $last_id; */
     /* Fermeture du traitement */
     $stmt->close();
+}
+if(isset($_POST["idtodelete"])) {
+    $sqlSelect = "SELECT password FROM gallery WHERE id = ?";
+    $stmtSelect = $conn->prepare($sqlSelect);
+    $stmtSelect->bind_param("i", $_POST["idtodelete"]);
+    $resultSelect = $stmtSelect->execute();
+    if($resultSelect) {
+        $stmtSelect->bind_result($pass_in_db);
+        $stmtSelect->fetch();
+        $stmtSelect->close();
+        // $rowSelect = $resultSelect->fetch_assoc();
+        if(password_verify($_POST["passwordtodelete"], $pass_in_db)) {
+            $sql = "DELETE FROM gallery WHERE id = ?";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("i", $_POST["idtodelete"]);
+            $result = $stmt->execute();
+            $stmt->close();
+        }
+    }
+    /* printf("%d ligne insérée.\n", $stmt->affected_rows); */
+    /* Fermeture du traitement */
 }
 
 // if ($stmt.execute() === TRUE) {
@@ -67,9 +89,14 @@ $result = $conn->query($sql);
 		    echo '<div class="proset-game">';
 		    echo "<a href=\"$row[id].pdf\">";
 		    echo "<img src=\"$row[id].png\"/></a>";
+		    echo "</a>";
 		    echo "<div class=\"set-name\">$row[name]</div>";
-		    echo "<div class=\"set-author\">$row[author]</div>";
-		    echo "<div class=\"set-author\"><a href=\"index.html?id=$row[id]\">Open in editor</div>";
+		    echo "<div class=\"set-author\">By: $row[author]</div>";
+		    echo "<div class=\"set-date\">$row[date]</div>";
+		    if ((strcmp($row["comment"], "") !== 0))
+			echo "<div class=\"set-comment\">Comment: $row[comment]</div>";
+		    echo "<div class=\"open-editor\"><a href=\"index.html?id=$row[id]\">Open in editor</div></a>";
+            echo '<form method="post"><input type="hidden" name="idtodelete" value="'."$row[id]".'"/><input size="6" placeholder="Password" type="password" name="passwordtodelete"><input type="submit" value="Delete"/></form>';
 		    /* printf ("%s (%s)\n", $row['author'], $row['name']);*/
 		    echo '</div>';
 		}
@@ -78,5 +105,6 @@ $result = $conn->query($sql);
 	    $conn->close();
 	    ?>
 	</div>
+	<p>Return to <a href="index.html">the editor</a></p>
     </body>
 </html>

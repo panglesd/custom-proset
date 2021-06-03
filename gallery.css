@@ -1,12 +1,22 @@
 .proset-list {
     display:flex;
-    
+    flex-wrap: wrap;
 }
 
 .proset-game {
     text-align:center;
     margin:30px;
-    
+    background-color:#e9c46a;
+    padding: 30px;
+    border-radius: 5px;
+    min-width: 200px;
+    max-width: 600px;
+}
+.proset-game:hover {
+    background-color:#f9d47a;
+}
+.proset-game img {
+    background-color: white;
 }
 
 .set-name {
@@ -16,3 +26,8 @@
 .set-author {
     
 }
+
+body {
+    background-color:#2a9d8f;
+}
+
