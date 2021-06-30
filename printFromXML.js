@@ -126,8 +126,14 @@ async function printFromJSON (json, jspdf2) {
 	
     docu.setDrawColor(220,220,220);
 
-    let otherSideDataUrl = card["other-side-image"];
     let otherSide = card["other-side-image"];
+    let otherSideDataUrl;
+    if(typeof otherSide == "object")
+	otherSideDataUrl = otherSide["src"];
+    else if(typeof otherSide == "string")
+	otherSideDataUrl = otherSide;
+    else
+	otherSideDataUrl = "";
     
     let nItem = json.items.length;
     let nPerPage = 0;
