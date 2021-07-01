@@ -484,7 +484,7 @@ function prosetToJSON () {
     bImage["height"] = bIElem.height;
     bImage["left"] = bIElem.offsetLeft;
     bImage["top"] = bIElem.offsetTop;
-    bImage["src"] = bIElem.getAttribute("src");
+    bImage["src"] = typeof bIElem.getAttribute("src") == "string" ? bIElem.getAttribute("src") : "";
 
     card["background-image"] = bImage;
 
@@ -496,7 +496,7 @@ function prosetToJSON () {
     versoImage["height"] = versoElem.height;
     versoImage["left"] = versoElem.offsetLeft;
     versoImage["top"] = versoElem.offsetTop;
-    versoImage["src"] = versoElem.getAttribute("src");
+    versoImage["src"] = typeof versoElem.getAttribute("src") == "string" ? versoElem.getAttribute("src") : "";
     card["other-side-image"] = versoImage;
 
 
@@ -512,7 +512,7 @@ function prosetToJSON () {
 	itemJSON["height"] = item.height;
 	itemJSON["left"] = item.offsetLeft;
 	itemJSON["top"] = item.offsetTop;
-	itemJSON["src"] = item.getAttribute("src");
+	itemJSON["src"] = typeof item.getAttribute("src") == "string" ? item.getAttribute("src") : "";
 	items.push(itemJSON);
     });
     json.items = items;
