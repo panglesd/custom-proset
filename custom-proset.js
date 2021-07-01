@@ -484,7 +484,7 @@ function prosetToJSON () {
     bImage["height"] = bIElem.height;
     bImage["left"] = bIElem.offsetLeft;
     bImage["top"] = bIElem.offsetTop;
-    bImage["src"] = bIElem.src;
+    bImage["src"] = bIElem.getAttribute("src");
 
     card["background-image"] = bImage;
 
