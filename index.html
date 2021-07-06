@@ -35,27 +35,151 @@
 			<span id="other-side-button">Show Back</span>
 			<span id="other-side-button2">Show Front</span>
 		    </div>
+		    <div class="help-clicker" id="card-help" style="display:inline-block; color:white; margin-left:10px; font-size:0.9em" onclick="displayToolHelp()">?</div>
+		    <script>
+		     function displayToolHelp () {
+			 introJs().setOptions({
+			     steps: [{
+				 element: document.querySelector("#tools-item"),
+				 title: 'Editing tools',
+				 intro: '<p>This bar allows you to choose your active tool to dispose the items on the card as you wish.</p>\
+'
+				 /* <p>Saving will generate a single file containing all the images and informations of your proset deck, to load for later modifications.</p>\
+				    <p>Keep in mind that it is not a file that you can print. If you want to generate a pdf, see the last section!</p>'*/
+				 
+			     }, {
+				 element: document.querySelector("#scale-tool"),
+				 title: 'Scaling',
+				 intro: '<p>The scaling tool allows you to rescale the image on the preview.</p>\
+<p>Once you have it active, click and horizontally drag the image that you wish to rescale. The more to the right, the bigger it will be.</p>'
+				 ,
+			     }, {
+				 element: document.querySelector("#move-tool"),
+				 title: 'Moving',
+				 intro: '<p>The moving tool allows you to move the image on the preview.</p>\
+<p>Once you have it active, click and drag the image to the location you want it to be.</p>'
+				 ,
+			     }, {
+				 element: document.querySelector("#redispose-tool"),
+				 title: 'Redisposing',
+				 intro: '<p>This tool is used to automatically place the item, according to the number of columns, line and space used you chose.</p>\
+<p>Whenever you changed one of these values, set this tool as active and click on the item you want to be repositioned.</p>\
+'
+				 ,
+			     }, {
+				 element: document.querySelector("#show-back-tool"),
+				 title: 'Show back',
+				 intro: '<p>This button allows you to switch the preview of the front of the card, to a preview of the back of the card.</p>\
+<p>When the backside preview is seen, you can use the tools to move and scale the backside image.</p>'
+				 ,
+			     }/* , {
+				 element: document.querySelector("#back-card-option"),
+				 title: 'Back side',
+				 intro: '<p>This file input is to send an (optional) image to display in the back side of each of the cards. When you have a back side image, you should print double-sided, otherwise single-sided!</p>'
+				 ,
+				 },*/
+			     ]
+			 }).start();
+		     }
+		    </script>
 		</div>
 	    </div>	<!-- User Interface for choosing parameters and items -->
 	    <div class="ui">
 		<h2>Proset Card Generator</h2>
 		<!-- For an introduction to the game, <a href="https://en.wikipedia.org/wiki/Projective_Set_(game)">here</a>. To play the game, <a href="https://www.ocf.berkeley.edu/~dadams/proset/">here</a>. You can also look at the cards created by others in the <a href="gallery.php">gallery</a>. -->
-		Need help? Show the help <a href="#" onclick="showIntro()">v1</a> or <a href="#" onclick="showHelp()">v2</a>. Go to the <a href="gallery.php">gallery</a>!
-		<h3>Menu</h3>
-		Save: <input class="input" type="button" id="save-input" value="Save"><br/>
-		Load: <input class="file-input" type="file" id="load-input" name="load-input" value="Load">
+		<p>Need help? Take the <a href="#" onclick="showHelp()">guided tour</a>!</p> <p>Need inspiration? Check out the <a href="gallery.php">gallery</a>!</p>
+		<div id="save-options">
+		    <h3>Menu <span class="help-clicker" id="menu-help" onclick="displaySaveHelp()">?</span></h3>
+		    <script>
+		     function displaySaveHelp () {
+			 introJs().setOptions({
+			     steps: [{
+				 element: document.querySelector("#save-options"),
+				 title: 'Saving and loading',
+				 intro: '<p>Here you can save and load your set of cards locally.</p>\
+<p>Saving will generate a single file containing all the images and informations of your proset deck, to load for later modifications.</p>\
+<p>Keep in mind that it is not a file that you can print. If you want to generate a pdf, see the last section!</p>\
+',
+			     },
+			     ]
+			 }).start();
+		     }
+		    </script>
+		    Save: <input class="input" type="button" id="save-input" value="Save"><br/>
+		    Load: <input class="file-input" type="file" id="load-input" name="load-input" value="Load">
+		</div>
 		<div id="cards-option">
-		    <h3>Cards</h3>
-		    <ul id="cards-option">
-			<li>Card dimension: <input id="card-width" type="number" value="64"/>mm x <input id="card-height" type="number" value="89"/>mm</li>
-			<li>Lines x columns: <input id="card-line-number" type="number" value="3"/>x<input id="card-column-number" type="number" value="2"/></li>
-			<li>Image filling: <input id="ratio-number" type="number" value="0.75" step="any" min="0" max="1"/></li>
-			<li>Background image: <input class="file-input" type="file" id="background-input"></li>
-			<li>Other side image: <input class="file-input" type="file" id="other-side-input"></li>
+		    <h3>Cards <span class="help-clicker" id="card-help" onclick="displayCardHelp()">?</span></h3>
+		    <script>
+		     function displayCardHelp () {
+			 introJs().setOptions({
+			     steps: [{
+				 element: document.querySelector("#cards-option"),
+				 title: 'Card options',
+				 intro: '<p>Here you can choose all the options that are specific to your cards.</p>\
+'
+				 /* <p>Saving will generate a single file containing all the images and informations of your proset deck, to load for later modifications.</p>\
+				    <p>Keep in mind that it is not a file that you can print. If you want to generate a pdf, see the last section!</p>'*/
+				 
+			     }, {
+				 element: document.querySelector("#dim-card-option"),
+				 title: 'Dimension',
+				 intro: '<p>Here you can choose the dimension, in millimeters. The default 64x89 is the standard size for poker cards.</p>'
+				 ,
+			     }, {
+				 element: document.querySelector("#array-card-option"),
+				 title: 'Array',
+				 intro: '<p>A feature of this generator is to automatically place the items in an array.</p><p> For instance, in the original deck, the dots are placed on a 3x2 array. If you want your items to be automatically placed, choose the dimension of the array here.</p><p>If you change these values with some items aready placed on the card, you will need the "Auto-placement tool" to update the automatic placement.</p>'
+				 ,
+			     }, {
+				 element: document.querySelector("#filling-card-option"),
+				 title: 'Space used',
+				 intro: '<p>This specify the amount of space available when automatically disposing the items in the card. </p><p>A value of 1 means "The whole card", while a value of 0.5 means "half of the card", resulting in more margin.</p>'
+				 ,
+			     }, {
+				 element: document.querySelector("#background-card-option"),
+				 title: 'Background image',
+				 intro: '<p>This file input is to send an (optional) image to display as background in each of the cards.</p>'
+				 ,
+			     }, {
+				 element: document.querySelector("#back-card-option"),
+				 title: 'Back side',
+				 intro: '<p>This file input is to send an (optional) image to display in the back side of each of the cards. </p><p>When you have a back side image, you should print double-sided, otherwise single-sided!</p>'
+				 ,
+			     },
+			     ]
+			 }).start();
+		     }
+		    </script>
+		    <ul>
+			<li id="dim-card-option">Card dimension: <input id="card-width" type="number" value="64"/>mm x <input id="card-height" type="number" value="89"/>mm</li>
+			<li id="array-card-option">Lines x columns: <input id="card-line-number" type="number" value="3"/>x<input id="card-column-number" type="number" value="2"/></li>
+			<li id="filling-card-option">Space used: <input id="ratio-number" type="number" value="0.75" step="any" min="0" max="1"/></li>
+			<li id="background-card-option">Background image: <input class="file-input" type="file" id="background-input"></li>
+			<li id="back-card-option">Back side image: <input class="file-input" type="file" id="other-side-input"></li>
 		    </ul>
 		</div>
 		<div id="items-option">
-		    <h3>Items</h3>
+		    <h3>Items <span class="help-clicker" id="item-help" onclick="displayItemHelp()">?</span></h3>
+		    <script>
+		     function displayItemHelp () {
+			 introJs().setOptions({
+			     steps: [{
+				 element: document.querySelector("#items-option"),
+				 title: 'Card options',
+				 intro: '<p>Here you can choose the number of items that your deck of card will have.</p>\
+<p>For each of the items, you will have to provide an image to represent the item in the card.</p>\
+<p>You can also click on the "Default" button to use a colored dot, as in the original game.</p>\
+<p>As every card is unique, the number of items determines the number of cards of the deck. For instance, 3 items lead to 7 cards, while 6 items lead to 63 cards. More generally, n items lead to 2<sup>n</sup>-1 cards.</p>\
+'
+				 /* <p>Saving will generate a single file containing all the images and informations of your proset deck, to load for later modifications.</p>\
+				    <p>Keep in mind that it is not a file that you can print. If you want to generate a pdf, see the last section!</p>'*/
+				 
+			     }
+			     ]
+			 }).start();
+		     }
+		    </script>
 		    Number of items : <input name="" type="number" value="6" id="n-item"/>.<!-- <br/> To find images, <a href="svgrepo.com">svgrepo</a> might be a good starting point. -->
 		    <ul id="list-inputs">
 			<li>
@@ -79,22 +203,69 @@
 		    </ul>
 		</div>
 		<div id="pdf-option">
-		    <h3>PDF options</h3>
-		    PDF format <select id="print-format" name="">
+		    <script>
+		     function displayPdfHelp () {
+			 introJs().setOptions({
+			     steps: [{
+				 element: document.querySelector("#pdf-option"),
+				 title: 'Pdf options',
+				 intro: '<p>Here you can choose all the options that are specific to the pdf containing the deck of card you will generate.</p>\
+'
+				 /* <p>Saving will generate a single file containing all the images and informations of your proset deck, to load for later modifications.</p>\
+				    <p>Keep in mind that it is not a file that you can print. If you want to generate a pdf, see the last section!</p>'*/
+				 
+			     }, {
+				 element: document.querySelector("#format-pdf-option"),
+				 title: 'Format',
+				 intro: '<p>You can choose the format, such as a4 or letter. You can also choose a custom one</p>'
+				 ,
+			     }, {
+				 element: document.querySelector("#margin-pdf-option"),
+				 title: 'Margin',
+				 intro: '<p>Depending on the capabilities of your printer, you might want to change the margin of the generated page.</p>'
+				 ,
+			     }, {
+				 element: document.querySelector("#orientation-pdf-option"),
+				 title: 'Orientation',
+				 intro: '<p>The cards can be printed in portrait or landscape mode.</p>'
+				 ,
+			     }, {
+				 element: document.querySelector("#delimiter-pdf-option"),
+				 title: 'Delimiter',
+				 intro: '<p>The word "delimiter" refers here to the border of the cards. You want it to be as discrete as possible to avoid it to be seen on the cut cards.</p>\
+<ul>\
+    <li>If you cut the cards using scissors, you might prefer the "box" delimitation, so that it is easy to follow the line to cut.</li>\
+    <li>If you use a machine such as a guillotine trimmer, you migh prefer the "intersection" delimiter, where only the corner of the cards are indicated.</li>\
+    <li>Finally, you can also have no delimiter at all.</li>\
+</ul>'
+				 ,
+			     }, {
+				 element: document.querySelector("#generate-pdf-option"),
+				 title: 'Generation',
+				 intro: '<p>Clicking this will open a new page, where you can download the generated pdf, and publish it in the <a href="gallery.php">gallery</a>.</p>\
+<p>If you publish it to the gallery, don\'t forget to give the necessary attribution. You should also choose a password to be able to later interact with your deck (otherwise, you cannot delete it).</p>\
+<p>Once the pdf is generated, print, cut and play! Or give a custom one as a gift to a friend!</p>'
+				 ,
+			     },
+			     ]
+			 }).start();
+		     }
+		    </script>
+		    <h3>PDF options <span class="help-clicker" id="card-help" onclick="displayPdfHelp()">?</span></h3>
+		    <div id="format-pdf-option">PDF format <select id="print-format" name="">
 			<option value="a3">A3</option>
 			<option selected value="a4">A4</option>
 			<option value="a5">A5</option>
 			<option value="letter">letter</option>
 			<option value="custom">custom</option>
-		    </select>
+		    </select></div>
 		    <span class="customSizeInput"><input id="customX" type="number" value="210"/>x
 			<input id="customY" type="number" value="297"/>mm
 		    </span>
-		    <br/>
-		    Margin <input id="print-margin" type="number" value="5"/>mm<br/>
-		    Orientation: <input type="radio" name="portrait" value="portrait" checked/> Portrait, <input type="radio" name="portrait" value="landscape"/> Landscape <br/>
-		    Card delimiter: <input type="radio" name="delimiter" value="box" checked/> Box, <input type="radio" name="delimiter" value="intersection"/> Intersection, <input type="radio" name="delimiter" value="none"/> None <br/>
-		    <input name="" type="button" value="Generate PDF" onclick="print()"/>
+		    <div id="margin-pdf-option">Margin <input id="print-margin" type="number" value="5"/>mm</div>
+		    <div id="orientation-pdf-option">Orientation: <input type="radio" name="portrait" value="portrait" checked/> Portrait, <input type="radio" name="portrait" value="landscape"/> Landscape </div>
+		    <div id="delimiter-pdf-option">Card delimiter: <input type="radio" name="delimiter" value="box" checked/> Box, <input type="radio" name="delimiter" value="intersection"/> Intersection, <input type="radio" name="delimiter" value="none"/> None </div>
+		    <div id="generate-pdf-option"><input name="" type="button" value="Generate PDF" onclick="print()"/></div>
 		</div>
 	    </div>
 	</div>
@@ -163,27 +334,41 @@
 		 steps: [{
 		     title: 'Welcome',
 		     intro: '<p>Welcome to custom-proset, a generator for decks of the game proset ! </p>\
-\
-<p>If you don\'t know proset, you can find the rules <a href="https://en.wikipedia.org/wiki/Projective_Set_(game)">here</a> or <a href="https://stacky.net/wiki/index.php?title=Projective_Set">there</a>, play the game <a href="https://www.ocf.berkeley.edu/~dadams/proset/">here</a>. If you want to know more about this game, there is a mathematical <a href="http://homepages.warwick.ac.uk/staff/D.Maclagan/papers/set.pdf">paper</a> about it.</p> <p>The rest of the tour will be clearer if you know the rules!</p>\
+<p>Using this website, you will be able to generate your own deck of cards, print it, and publish it in the gallery!</p>\
+<p> A card consists of several items, that are usually represented as colored dots. Here, they will be replaced with the images of your choice!</p>\
+<p>For instance, here are two card from the original game, and two custom cards created using this tool:</p>\
+<p> Have a look at the <a href="gallery.php">gallery</a> to peek at some examples of decks generated by this tool.</p>\
 ',
-		     highlightClass: 'testclass' 
 		 },{
 		     title: 'Welcome',
-		     intro: '<p>Using this page, you will be able to generate your own deck of cards.</p><p> A card consists of several items, that are usually represented as colored dots. Here, they will be replaced with the images of your choice!</p><p> Have a look at the <a href="gallery.php">gallery</a> to peek at some examples of decks generated by this tool.</p>\
-\
-',
-		     highlightClass: 'testclass' 
-		 },
-			 {
-			     element: document.querySelector(".card"),
-			     title: 'Preview of your card',
-			     intro: 'This element shows a preview of a card of your generated deck. It will be also useful to place the items in the card.'
-			 },
-			 {
-			     element: document.querySelector('#cards-option'),
-			     title: 'Cards',
-			     intro: 'Here you can choose several options for your cards <ul><li>The default dimension is the poker size standard, but it can be changed.</li><li>The line and column number are used for automatic placement of items</li><li>The "Image filling" is used for automatic scaling. The higher it is, the more space is used.</li><li>You can add a background image that will appear in every card.</li><li>You can also choose an image that will appear on the back of every card.</li></ul>'
-			 },
+		     intro: '\
+<div>If you don\'t know proset, here is a quick explanation:\
+<ol>\
+    <li>A card can contain different items, it must have at least one item. Each card is unique.</li>\
+    <li>A "Proset" is a collection of cards such that every item appear in an even number of cards of the collection.</li>\
+    <li>Seven cards are placed on the table, visible to everyone</li>\
+    <li>The first player to find and show a proset gets the cards as points. New cards replace the ones that were taken, for there must be always seven visible cards.</li>\
+    <li>When there is no more cards to draw, the player with the most cards win!</li>\
+</ol></div>\
+<p>You can find more information on <a href="https://en.wikipedia.org/wiki/Projective_Set_(game)">Wikipedia</a>, or <a href="https://www.ocf.berkeley.edu/~dadams/proset/">play the game</a>. There is also a <a href="http://homepages.warwick.ac.uk/staff/D.Maclagan/papers/set.pdf">mathematical paper</a> about it.</p>',
+		 }, {
+		     
+		     element: document.querySelector(".card"),
+		     title: 'Preview of your card',
+		     intro: 'This element shows a preview of a card of your generated deck. It will be also useful to place the items in the card.'
+		 }, {
+		     element: document.querySelector('#cards-option'),
+		     title: 'Cards',
+		     intro: 'This section allows you to specify all the options that are specific to the cards. The meaning of each of the options is explained in the help specific to this section.',
+		     intro2: 'Here you can choose several options for your cards \
+<ul>\
+<li>The default dimension is the poker size standard, but it can be changed.</li>\
+<li>The line and column number are used for automatic placement of items</li>\
+<li>The "Image filling" is used for automatic scaling. The higher it is, the more space is used.</li>\
+<li>You can add a background image that will appear in every card.</li>\
+<li>You can also choose an image that will appear on the back of every card.</li>\
+</ul>'
+		 }, {
 			 /* {
 			    element: document.querySelector('#cards-option li'),
 			    intro: 'Default dimension is the poker size standard'
@@ -204,28 +389,25 @@
 			    element: document.querySelectorAll('#cards-option li')[4],
 			    intro: 'An image to use for the back of each card'
 			    },*/
-		     {
-			 element: document.querySelector('#items-option'),
-			 title: 'Items',
-			 intro: '<p>You can chose the number of items in your deck of cards.</p><p> For each item, you have to provide an image to represent the item on the card (or use the default "colored dot").</p>\
+		     element: document.querySelector('#items-option'),
+		     title: 'Items',
+		     intro: '<p>You can chose the number of items in your deck of cards.</p><p> For each item, you have to provide an image to represent the item on the card (or use the default "colored dot").</p>\
 \
 <p>There are many ways to choose the images. Websites like <a href="https://www.svgrepo.com/">svgrepo</a> or <a href="https://www.flaticon.com/">Flaticon</a> are a good start. You can also extract parts from photos you\'ve taken, using an image editor.</p> <p>Be creative!</p>'
-		     },
-			 {
-			     title: 'Tools',
-			     element: document.querySelector('#tools-item'),
-			     intro: '<p>After adding some image for your items, you can place them in your card using the tools here</p><p>Scale is for scaling, Move is for moving. If you click on an item with the "Automatic placement" tool selected, the item will be replaced on the card depending on the number of lines, column and "space filling" on the card.</p>'
-			 },
-			 {
-			     title: 'Back of the card',
-			     element: document.querySelector('#show-back-tool'),
-			     intro: 'You can also have a preview of the back of your cards, to place and scale the image there.'
-			 },
-			 {
-			     title: 'Printing!',
-			     element: document.querySelector('#pdf-option'),
-			     intro: '<p>Once you are happy with your card, you can choose printing options and generate the pdf!</p><p>Print the pdf, cut the cards, and enjoy playing the game with your own set of cards!</p><p>Don\'t forget to publish it to the <a href="gallery.php">gallery</a> if you wish, so other people can enjoy it as well.</p>'
-			 },
+		 }, {
+		     title: 'Tools',
+		     element: document.querySelector('#tools-item'),
+		     intro: '<p>After adding some image for your items, you can place them in your card using the tools here</p>',
+		     intro2:'<p>Scale is for scaling, Move is for moving. If you click on an item with the "Automatic placement" tool selected, the item will be replaced on the card depending on the number of lines, column and "space filling" on the card.</p>'
+		 }, {
+		     title: 'Back of the card',
+		     element: document.querySelector('#show-back-tool'),
+		     intro: 'You can also have a preview of the back of your cards, to place and scale the image there.'
+		 }, {
+		     title: 'Printing!',
+		     element: document.querySelector('#pdf-option'),
+		     intro: '<p>Once you are happy with your card, you can choose printing options and generate the pdf!</p><p>Print the pdf, cut the cards, and enjoy playing the game with your own set of cards!</p><p>Don\'t forget to publish it to the <a href="gallery.php">gallery</a> if you wish, so other people can enjoy it as well.</p>'
+		 },
 		 ]
 	     }).start();
 	 }

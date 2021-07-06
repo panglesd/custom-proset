@@ -134,3 +134,10 @@ h3 {
 .introjs-tooltip {
     min-width: 550px;
 }
+
+.help-clicker {
+    color: blue;
+    font-size:0.75em;
+    text-decoration: underline;
+    cursor: pointer;
+}
