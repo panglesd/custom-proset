@@ -306,6 +306,10 @@ document.querySelectorAll("#card-container").forEach((item) =>{
 
 async function print () {
     let json = prosetToJSON();
+    if(json.items.some((elem) => elem.src == "")) {
+	alert("You need to input an image for every item.");
+	return;
+    }
     setTimeout(() =>{
 	document.querySelector("#window").style.display = "block";
     },0);
